@@ -1,0 +1,58 @@
+/* מרחב — design tokens. One place for color, type, space, depth and motion. */
+:root {
+  color-scheme: light;
+
+  /* material: drafting paper, graphite ink, one slate accent */
+  --paper: #f4f1ea;
+  --surface: #fbf9f4;
+  --surface-sunk: #ece7dc;
+  --ink: #1f2a37;
+  --ink-2: #4a5563;
+  --ink-3: #6b7380;
+  --line: #d9d3c7;
+  --line-strong: #b9b1a2;
+  --accent: #1f3a5f;
+  --accent-soft: #dfe6ee;
+  --stim: #9db0c4; /* stimulus fill */
+  --ok: #3f6e45;
+  --ok-soft: #e3ece1;
+  --bad: #a8432a;
+  --bad-soft: #f3e1da;
+  --warn: #8a6516;
+
+  /* type */
+  --font-display: 'Frank Ruhl Libre', 'David Libre', serif;
+  --font-body: 'Assistant', 'Segoe UI', system-ui, sans-serif;
+  --fs-xs: 0.8125rem;
+  --fs-sm: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.875rem;
+  --fs-2xl: 2.5rem;
+
+  /* space: 4-based rhythm */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+
+  /* depth: light from top-right, consistent everywhere */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-1: -1px 1px 0 rgba(31, 42, 55, 0.04), -2px 4px 10px rgba(31, 42, 55, 0.05);
+  --shadow-2: -2px 3px 0 rgba(31, 42, 55, 0.05), -6px 12px 28px rgba(31, 42, 55, 0.09);
+
+  /* motion: short and functional */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --t-fast: 140ms;
+  --t-med: 240ms;
+
+  --nav-h: 60px;
+  --maxw: 1120px;
+  --z-nav: 30;
+  --z-menu: 40;
+}
