@@ -85,7 +85,7 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
         </div>
       )}
 
-      <div className="options" role="group" aria-label="אפשרויות תשובה">
+      <div className={`options ${item.dynamic && !ready ? 'waiting' : ''}`} role="group" aria-label="אפשרויות תשובה" aria-hidden={item.dynamic && !ready ? true : undefined}>
         {item.options.map((o, i) => {
           const state = !answered || !showFeedback ? '' : o.correct ? 'is-correct' : i === answer ? 'is-wrong' : 'is-dim';
           return (

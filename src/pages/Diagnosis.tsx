@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Empty, Meter, pct } from '../components/ui/States';
 import { useStore } from '../data/store';
 import { byType, byVariant, joinAttempts, statOf, type Stat } from '../logic/diagnostics';
-import { ERROR_LABEL, TEST_TYPES, TYPE_LABEL, type Dim, type ErrorType, type Motion } from '../logic/types';
+import { ERROR_LABEL, TEST_TYPES, TYPE_LABEL, TYPE_VARIANTS, type Dim, type ErrorType, type Motion } from '../logic/types';
 import './run.css';
 
 const COLS: { dim: Dim; motion: Motion; label: string }[] = [
@@ -115,6 +115,12 @@ export default function Diagnosis() {
                     </span>
                     {COLS.map((c) => {
                       const s = byVariant(rows, t, c.dim, c.motion);
+                      if (!TYPE_VARIANTS[t].some(([d, m]) => d === c.dim && m === c.motion))
+                        return (
+                          <span key={c.label} className="cell na" role="cell" aria-label="לא קיים בסוג הזה">
+                            <small>לא קיים</small>
+                          </span>
+                        );
                       return (
                         <span key={c.label} className="cell" style={heatColor(s)} role="cell">
                           <span className="num">{s.n ? pct(s.accuracy) : '–'}</span>

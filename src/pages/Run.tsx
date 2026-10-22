@@ -5,7 +5,7 @@ import { Empty, ErrorState, Meter } from '../components/ui/States';
 import { getState, recordSession, type AttemptRow, type QuestionRow, type SessionRow } from '../data/store';
 import { applyResult, MIN_ITEMS_FOR_RULE, type LevelEvent } from '../logic/mastery';
 import { hashString } from '../logic/rng';
-import { buildItems, isTimed, SECONDS_PER_ITEM, type SessionConfig } from '../logic/session';
+import { buildItems, isTimed, secondsFor, type SessionConfig } from '../logic/session';
 import type { Item } from '../logic/types';
 import { MODE_LABEL, TYPE_LABEL } from '../logic/types';
 import './run.css';
@@ -48,7 +48,7 @@ export default function Run() {
     itemStart.current = performance.now();
     if (!timed || !item) return;
     // the animation before the question point does not count against answer time
-    const limit = SECONDS_PER_ITEM[item.level] * 1000 + (item.dynamic ? DYNAMIC_GRACE_MS : 0);
+    const limit = secondsFor(item.type, item.level) * 1000 + (item.dynamic ? DYNAMIC_GRACE_MS : 0);
     setRemaining(limit);
     const t = setInterval(() => {
       const left = limit - (performance.now() - itemStart.current);

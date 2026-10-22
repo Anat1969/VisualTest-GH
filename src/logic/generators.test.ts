@@ -15,6 +15,18 @@ const VARIANTS: Variant[] = [
   { type: 'folding', dim: '3D', motion: 'static' },
   { type: 'folding', dim: '3D', motion: 'dynamic' },
   { type: 'matrices', dim: '2D', motion: 'static' },
+  { type: 'sections', dim: '3D', motion: 'static' },
+  { type: 'sections', dim: '3D', motion: 'dynamic' },
+  { type: 'plans', dim: '3D', motion: 'static' },
+  { type: 'plans', dim: '3D', motion: 'dynamic' },
+  { type: 'hidden', dim: '2D', motion: 'static' },
+  { type: 'speed', dim: '2D', motion: 'static' },
+  { type: 'speed', dim: '2D', motion: 'dynamic' },
+  { type: 'mechanics', dim: '2D', motion: 'static' },
+  { type: 'mechanics', dim: '2D', motion: 'dynamic' },
+  { type: 'statics', dim: '2D', motion: 'static' },
+  { type: 'physics', dim: '2D', motion: 'static' },
+  { type: 'physics', dim: '2D', motion: 'dynamic' },
 ];
 
 describe('cube nets', () => {

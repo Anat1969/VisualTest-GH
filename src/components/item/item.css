@@ -142,3 +142,20 @@
   gap: var(--s1);
 }
 .net { max-height: 300px; }
+
+.text-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  min-height: 96px;
+  padding: var(--s3) var(--s2);
+  text-align: center;
+  font-size: var(--fs-md);
+  line-height: 1.35;
+}
+
+/* dynamic items: answers appear only at the question point */
+.options.waiting { visibility: hidden; }
+.item-stage > svg.wide { width: min(100%, 640px); max-height: 340px; }

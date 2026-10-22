@@ -6,6 +6,7 @@ import { Swatch } from './FacePattern';
 import { NetFlat } from './Net';
 import { PaperHoles, PaperSteps } from './Paper';
 import { Poly2D } from './Poly2D';
+import { Scene, TextOption } from './Scene';
 
 export function Visual({ spec, label }: { spec: VisualSpec; label?: string }) {
   switch (spec.kind) {
@@ -27,5 +28,9 @@ export function Visual({ spec, label }: { spec: VisualSpec; label?: string }) {
       return <GlyphView spec={spec} label={label} />;
     case 'matrix':
       return <Matrix spec={spec} label={label} />;
+    case 'scene':
+      return <Scene spec={spec} label={label} />;
+    case 'text':
+      return <TextOption spec={spec} />;
   }
 }

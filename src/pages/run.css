@@ -91,3 +91,4 @@
 .rung.open { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
 .rung.passed { background: var(--ok-soft); border-color: var(--ok-soft); }
 .rung.locked { color: var(--ink-3); background: transparent; border-style: dashed; }
+.heat .cell.na { border-style: dashed; color: var(--line-strong); background: transparent; }
