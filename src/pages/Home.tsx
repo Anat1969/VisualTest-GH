@@ -10,6 +10,9 @@ import { makeRng } from '../logic/rng';
 import type { SessionConfig } from '../logic/session';
 import { randomPolycube } from '../logic/shapes';
 import { CATEGORIES, ERROR_HINT, ERROR_LABEL, MODE_LABEL, TEST_TYPES, TYPE_LABEL, type ErrorType, type Level, type TestType } from '../logic/types';
+import { INTELLIGENCES } from '../content/intelligences';
+import { IntelCard } from './Intelligences';
+import '../components/intel/intel.css';
 import './home.css';
 
 const DAY_LETTERS = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
@@ -185,8 +188,9 @@ export default function Home() {
       {/* ---------- map ---------- */}
       <section className="map" aria-labelledby="map-title">
         <div className="map-head">
-          <h2 id="map-title">מפת המיומנויות</h2>
-          <p className="small muted">ארבעה תחומים, עשרה סוגים. לכל סוג רמה, דיוק ומגמה. לחיצה פותחת תרגול.</p>
+          <span className="eyebrow">בלוק א</span>
+          <h2 id="map-title">מיומנויות סטנדרטיות</h2>
+          <p className="small muted">סוגי הפריטים של מבחני ההתאמה: ארבעה תחומים, עשרה סוגים. לכל סוג רמה, דיוק ומגמה. לחיצה פותחת תרגול.</p>
         </div>
         {CATEGORIES.map((c) => (
           <div key={c.id} className="domain">
@@ -225,6 +229,23 @@ export default function Home() {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* ---------- block B: intelligences ---------- */}
+      <section className="map" aria-labelledby="intel-title">
+        <div className="map-head">
+          <span className="eyebrow">בלוק ב</span>
+          <h2 id="intel-title">מיומנויות האינטליגנציות</h2>
+          <p className="small muted">
+            מערך תרגול לכל אינטליגנציה, בשפה ובצבעים של אפליקציית האינטליגנציות. נבנה לפי הסדר.{' '}
+            <Link to="/intelligences">לכל האינטליגנציות</Link>
+          </p>
+        </div>
+        <div className="intel-grid">
+          {INTELLIGENCES.filter((i) => i.group === 'gardner').map((i) => (
+            <IntelCard key={i.id} i={i} />
+          ))}
+        </div>
       </section>
 
       {/* ---------- insights ---------- */}

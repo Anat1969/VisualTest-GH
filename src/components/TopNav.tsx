@@ -13,6 +13,7 @@ const LINKS = [
   { to: '/simulation', label: 'סימולציה' },
   { to: '/diagnosis', label: 'אבחון' },
   { to: '/progress', label: 'התקדמות' },
+  { to: '/intelligences', label: 'אינטליגנציות' },
   { to: '/library', label: 'ספרייה' },
 ];
 

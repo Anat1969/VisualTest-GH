@@ -10,7 +10,10 @@ export const ITEMS_PER_MODE: Record<Mode, number> = { explain: 6, practice: 10, 
 export const SECONDS_PER_ITEM: Record<Level, number> = { 1: 45, 2: 35, 3: 25 };
 /** Perceptual-speed items are meant to be fast; also an estimate, not a verified figure. */
 const SPEED_SECONDS: Record<Level, number> = { 1: 15, 2: 12, 3: 10 };
-export const secondsFor = (type: TestType, level: Level) => (type === 'speed' ? SPEED_SECONDS : SECONDS_PER_ITEM)[level];
+/** Reading a whole paragraph takes longer than reading a figure. Estimate. */
+const READING_SECONDS: Record<Level, number> = { 1: 60, 2: 55, 3: 50 };
+export const secondsFor = (type: TestType, level: Level) =>
+  (type === 'speed' ? SPEED_SECONDS : type === 'sequence' ? READING_SECONDS : SECONDS_PER_ITEM)[level];
 export const isTimed = (mode: Mode) => mode === 'exam' || mode === 'simulation';
 
 export function variantsOf(type: TestType): Variant[] {

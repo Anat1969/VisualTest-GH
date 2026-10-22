@@ -1,0 +1,116 @@
+.vb-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s4);
+  width: 100%;
+  padding: var(--s5) var(--s3);
+  flex-wrap: wrap;
+}
+.vb-word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  line-height: 1.1;
+  padding: var(--s3) var(--s5);
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-2);
+}
+.vb-link {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.vb-link-line { width: clamp(16px, 4vw, 40px); height: 0; border-top: 2px dashed var(--accent); }
+.vb-link-q {
+  padding: 2px var(--s2);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+
+.vb-opt-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s3);
+  min-height: 96px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-lg);
+  flex-wrap: wrap;
+  text-align: center;
+}
+.vb-rule { width: 2px; height: 1.4em; background: var(--line-strong); }
+.vb-opt-word {
+  display: grid;
+  place-items: center;
+  min-height: 96px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-xl);
+}
+.vb-note {
+  font-size: var(--fs-md);
+  color: var(--ink-2);
+  text-align: center;
+  padding: var(--s5);
+  max-width: 40ch;
+}
+.vb-sentences {
+  list-style: none;
+  margin: 0;
+  padding: var(--s2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  width: min(100%, 720px);
+  text-align: start;
+}
+.vb-sentences li {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: var(--s3);
+  align-items: baseline;
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
+.vb-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-lg);
+  color: var(--accent);
+  text-align: center;
+}
+.vb-order {
+  display: flex;
+  direction: rtl;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 96px;
+  flex-wrap: wrap;
+}
+.vb-chip {
+  width: 2.1rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-md);
+  border: 1px solid var(--ink-2);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.vb-chip:first-child { background: var(--ink); color: var(--surface); border-color: var(--ink); }

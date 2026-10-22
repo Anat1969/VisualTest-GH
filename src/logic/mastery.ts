@@ -1,6 +1,6 @@
 // Level progression: 80%+ in two consecutive sessions moves up; under 70% in one session moves down.
 import type { Level, TestType } from './types';
-import { LEVELS, TEST_TYPES } from './types';
+import { ALL_TYPES, LEVELS } from './types';
 
 export type MasteryStatus = 'locked' | 'open' | 'passed';
 
@@ -17,7 +17,7 @@ export const DROP = 0.7;
 export const MIN_ITEMS_FOR_RULE = 4;
 
 export function initialMastery(): MasteryRow[] {
-  return TEST_TYPES.flatMap((t) =>
+  return ALL_TYPES.flatMap((t) =>
     LEVELS.map((level) => ({ test_type: t, level, status: level === 1 ? 'open' : 'locked', streak: 0, last_date: null }) as MasteryRow),
   );
 }

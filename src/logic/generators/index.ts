@@ -6,6 +6,7 @@ import { hiddenFigure, perceptualSpeed } from './perception';
 import { plans } from './plans';
 import { sections } from './sections';
 import { mechanics, physics, statics } from './technical';
+import { analogy, oddWord, sequence } from './verbal';
 import { rotation2D, rotation3D } from './rotation';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
@@ -61,5 +62,11 @@ function build(type: Variant['type'], dim: Variant['dim'], motion: Variant['moti
       return statics(rng, level);
     case 'physics':
       return physics(rng, level, motion);
+    case 'analogy':
+      return analogy(rng, level);
+    case 'oddword':
+      return oddWord(rng, level);
+    case 'sequence':
+      return sequence(rng, level);
   }
 }
