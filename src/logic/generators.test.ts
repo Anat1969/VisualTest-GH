@@ -27,6 +27,9 @@ const VARIANTS: Variant[] = [
   { type: 'statics', dim: '2D', motion: 'static' },
   { type: 'physics', dim: '2D', motion: 'static' },
   { type: 'physics', dim: '2D', motion: 'dynamic' },
+  { type: 'analogy', dim: '2D', motion: 'static' },
+  { type: 'oddword', dim: '2D', motion: 'static' },
+  { type: 'sequence', dim: '2D', motion: 'static' },
 ];
 
 describe('cube nets', () => {

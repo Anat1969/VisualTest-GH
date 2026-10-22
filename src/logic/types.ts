@@ -10,7 +10,11 @@ export type TestType =
   | 'matrices'
   | 'mechanics'
   | 'statics'
-  | 'physics';
+  | 'physics'
+  // intelligences block · linguistic
+  | 'analogy'
+  | 'oddword'
+  | 'sequence';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -141,6 +145,13 @@ export interface SceneSpec {
   label?: string;
 }
 
+/** Verbal material: a word pair, a word, a note, or numbered sentences. */
+export interface VerbalSpec {
+  kind: 'verbal';
+  mode: 'pair' | 'pairOption' | 'word' | 'note' | 'sentences' | 'order';
+  words: string[];
+}
+
 /** Answer given as words, e.g. a direction or a weight. */
 export interface TextSpec {
   kind: 'text';
@@ -159,7 +170,8 @@ export type VisualSpec =
   | GlyphSpec
   | MatrixSpec
   | SceneSpec
-  | TextSpec;
+  | TextSpec
+  | VerbalSpec;
 
 /* ---------- Dynamic animation: plays to a question point, then continues after answer ---------- */
 
@@ -223,7 +235,14 @@ export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
   mechanics: [['2D', 'static'], ['2D', 'dynamic']],
   statics: [['2D', 'static']],
   physics: [['2D', 'static'], ['2D', 'dynamic']],
+  analogy: [['2D', 'static']],
+  oddword: [['2D', 'static']],
+  sequence: [['2D', 'static']],
 };
+
+/** Drills of the intelligences block (kept out of the standard skill map). */
+export const INTEL_TYPES: TestType[] = ['analogy', 'oddword', 'sequence'];
+export const ALL_TYPES: TestType[] = [...TEST_TYPES, ...INTEL_TYPES];
 export const LEVELS: Level[] = [1, 2, 3];
 
 export const TYPE_LABEL: Record<TestType, string> = {
@@ -237,6 +256,9 @@ export const TYPE_LABEL: Record<TestType, string> = {
   mechanics: 'מכניקה',
   statics: 'סטטיקה',
   physics: 'פיזיקה אינטואיטיבית',
+  analogy: 'יחסי משמעות',
+  oddword: 'מיון ודיוק',
+  sequence: 'רצף וטיעון',
 };
 
 export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';

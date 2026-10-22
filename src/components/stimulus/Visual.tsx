@@ -7,6 +7,7 @@ import { NetFlat } from './Net';
 import { PaperHoles, PaperSteps } from './Paper';
 import { Poly2D } from './Poly2D';
 import { Scene, TextOption } from './Scene';
+import { Verbal } from './Verbal';
 
 export function Visual({ spec, label }: { spec: VisualSpec; label?: string }) {
   switch (spec.kind) {
@@ -32,5 +33,7 @@ export function Visual({ spec, label }: { spec: VisualSpec; label?: string }) {
       return <Scene spec={spec} label={label} />;
     case 'text':
       return <TextOption spec={spec} />;
+    case 'verbal':
+      return <Verbal spec={spec} />;
   }
 }

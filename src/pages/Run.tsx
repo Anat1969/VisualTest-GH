@@ -7,7 +7,7 @@ import { applyResult, MIN_ITEMS_FOR_RULE, type LevelEvent } from '../logic/maste
 import { hashString } from '../logic/rng';
 import { buildItems, isTimed, secondsFor, type SessionConfig } from '../logic/session';
 import type { Item } from '../logic/types';
-import { MODE_LABEL, TYPE_LABEL } from '../logic/types';
+import { INTEL_TYPES, MODE_LABEL, TYPE_LABEL } from '../logic/types';
 import './run.css';
 
 interface Answer {
@@ -150,9 +150,11 @@ export default function Run() {
           <span className="tag accent">{MODE_LABEL[state.mode]}</span>
           <span className="tag">{TYPE_LABEL[item.type]}</span>
           <span className="tag">רמה {item.level}</span>
-          <span className="tag">
-            {item.dim} · {item.motion === 'static' ? 'סטטי' : 'דינמי'}
-          </span>
+          {!INTEL_TYPES.includes(item.type) && (
+            <span className="tag">
+              {item.dim} · {item.motion === 'static' ? 'סטטי' : 'דינמי'}
+            </span>
+          )}
         </div>
         <div className="row run-meta">
           <span className="small num">
