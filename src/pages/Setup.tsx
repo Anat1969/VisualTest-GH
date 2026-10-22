@@ -37,7 +37,7 @@ export default function Setup({ mode }: { mode: 'practice' | 'exam' | 'simulatio
   const copy = COPY[mode];
 
   const levels = useMemo(
-    () => ({ rotation: currentLevel(mastery, 'rotation'), folding: currentLevel(mastery, 'folding') }) as Record<TestType, Level>,
+    () => Object.fromEntries(TEST_TYPES.map((t) => [t, currentLevel(mastery, t)])) as Record<TestType, Level>,
     [mastery],
   );
 

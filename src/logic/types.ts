@@ -1,6 +1,6 @@
 // Domain model shared by generators, sessions and storage.
 
-export type TestType = 'rotation' | 'folding';
+export type TestType = 'rotation' | 'folding' | 'matrices';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -72,6 +72,26 @@ export interface CubeViewSpec {
   right: CubeSlot;
 }
 
+export type Shape = 'circle' | 'square' | 'triangle' | 'diamond';
+export type Fill = 'empty' | 'hatched' | 'solid';
+export type Count = 1 | 2 | 3;
+export interface Glyph {
+  shape: Shape;
+  count: Count;
+  fill: Fill;
+}
+
+export interface GlyphSpec {
+  kind: 'glyph';
+  glyph: Glyph;
+}
+
+/** 3×3 matrix; the cell with `null` is the one to complete. Row-major. */
+export interface MatrixSpec {
+  kind: 'matrix';
+  cells: (Glyph | null)[];
+}
+
 export interface SwatchSpec {
   kind: 'swatch';
   face: FaceLook;
@@ -84,7 +104,9 @@ export type VisualSpec =
   | PaperHolesSpec
   | NetSpec
   | CubeViewSpec
-  | SwatchSpec;
+  | SwatchSpec
+  | GlyphSpec
+  | MatrixSpec;
 
 /* ---------- Dynamic animation: plays to a question point, then continues after answer ---------- */
 
@@ -122,12 +144,20 @@ export interface Variant {
   motion: Motion;
 }
 
-export const TEST_TYPES: TestType[] = ['rotation', 'folding'];
+export const TEST_TYPES: TestType[] = ['rotation', 'folding', 'matrices'];
+
+/** Which 2D/3D × static/dynamic variants each type offers. Matrices are 2D and static only. */
+export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
+  rotation: [['2D', 'static'], ['2D', 'dynamic'], ['3D', 'static'], ['3D', 'dynamic']],
+  folding: [['2D', 'static'], ['2D', 'dynamic'], ['3D', 'static'], ['3D', 'dynamic']],
+  matrices: [['2D', 'static']],
+};
 export const LEVELS: Level[] = [1, 2, 3];
 
 export const TYPE_LABEL: Record<TestType, string> = {
   rotation: 'רוטציה מנטלית',
   folding: 'קיפול ופריסה',
+  matrices: 'מטריצות',
 };
 
 export const MODE_LABEL: Record<Mode, string> = {

@@ -1,6 +1,7 @@
 import { hashString, makeRng } from '../rng';
 import type { DynamicSpec, Item, Level, Option, Variant, VisualSpec } from '../types';
 import { cubeNet, paperFolding } from './folding';
+import { matrices2D } from './matrices';
 import { rotation2D, rotation3D } from './rotation';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
@@ -21,9 +22,11 @@ export function generateItem(variant: Variant, level: Level, seed: number): Item
       ? dim === '2D'
         ? rotation2D(rng, level, motion)
         : rotation3D(rng, level, motion)
-      : dim === '2D'
-        ? paperFolding(rng, level, motion)
-        : cubeNet(rng, level, motion);
+      : type === 'folding'
+        ? dim === '2D'
+          ? paperFolding(rng, level, motion)
+          : cubeNet(rng, level, motion)
+        : matrices2D(rng, level);
   const options = rng.shuffle(draft.options);
   return {
     id: `${type}-${dim}-${motion}-L${level}-${hashString(JSON.stringify(draft.options[0].visual) + JSON.stringify(draft.stimulus))}`,

@@ -1,6 +1,7 @@
 import type { VisualSpec } from '../../logic/types';
 import { CubeView } from './CubeView';
 import { Cubes3D } from './Cubes3D';
+import { GlyphView, Matrix } from './Glyphs';
 import { Swatch } from './FacePattern';
 import { NetFlat } from './Net';
 import { PaperHoles, PaperSteps } from './Paper';
@@ -22,5 +23,9 @@ export function Visual({ spec, label }: { spec: VisualSpec; label?: string }) {
       return <CubeView spec={spec} label={label} />;
     case 'swatch':
       return <Swatch face={spec.face} label={label} />;
+    case 'glyph':
+      return <GlyphView spec={spec} label={label} />;
+    case 'matrix':
+      return <Matrix spec={spec} label={label} />;
   }
 }
