@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { CompressLab } from '../components/intel/CompressLab';
-import { RhythmLab } from '../components/intel/RhythmLab';
+import { TOOLS } from '../components/intel/registry';
 import { Skyline } from '../components/intel/RhythmViz';
 import { Empty, pct } from '../components/ui/States';
 import { INTELLIGENCES_APP_URL, PROGRAMS, intelligenceById, type Skill } from '../content/intelligences';
@@ -142,22 +141,19 @@ export default function IntelligencePage() {
             </div>
           </section>
 
-          {program.skills.some((s) => s.tool === 'rhythm') && (
-            <section className="card" id="tool-rhythm" style={{ scrollMarginTop: 80 }}>
-              <span className="eyebrow">כלי</span>
-              <h2>מעבדת הקצב</h2>
-              <p className="small muted">כותבים, ורואים את הטקסט כמו שאוזן שומעת אותו: אורך המשפטים, ההפסקות והחזרות.</p>
-              <RhythmLab color={color} seed={intel.description} />
-            </section>
-          )}
-          {program.skills.some((s) => s.tool === 'compress') && (
-            <section className="card" id="tool-compress" style={{ scrollMarginTop: 80 }}>
-              <span className="eyebrow">כלי</span>
-              <h2>סדנת התמצות</h2>
-              <p className="small muted">אותו מידע בפחות מילים. הכתיבה נמדדת מול תקציב מילים, ובסוף אפשר להשוות לנוסח לדוגמה.</p>
-              <CompressLab color={color} />
-            </section>
-          )}
+          {program.skills
+            .filter((s) => s.tool)
+            .map((s) => {
+              const tool = TOOLS[s.tool!];
+              return (
+                <section key={s.tool} className="card tool-card" id={`tool-${s.tool}`} style={{ scrollMarginTop: 80 }}>
+                  <span className="eyebrow">כלי · {s.name}</span>
+                  <h2>{tool.title}</h2>
+                  <p className="small muted">{tool.blurb}</p>
+                  {tool.render({ color, seed: intel.description })}
+                </section>
+              );
+            })}
         </>
       )}
 
