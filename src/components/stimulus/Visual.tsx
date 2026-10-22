@@ -1,4 +1,5 @@
 import type { VisualSpec } from '../../logic/types';
+import { AudioPlayer } from './AudioPlayer';
 import { CubeView } from './CubeView';
 import { Cubes3D } from './Cubes3D';
 import { GlyphView, Matrix } from './Glyphs';
@@ -35,5 +36,7 @@ export function Visual({ spec, label }: { spec: VisualSpec; label?: string }) {
       return <TextOption spec={spec} />;
     case 'verbal':
       return <Verbal spec={spec} />;
+    case 'audio':
+      return <AudioPlayer spec={spec} />;
   }
 }

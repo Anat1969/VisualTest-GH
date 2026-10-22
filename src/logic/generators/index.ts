@@ -8,6 +8,11 @@ import { sections } from './sections';
 import { mechanics, physics, statics } from './technical';
 import { analogy, oddWord, sequence } from './verbal';
 import { rotation2D, rotation3D } from './rotation';
+import { conditional, series, syllogism } from './logical';
+import { beat, contour, deviation } from './musical';
+import { balance, hands, path } from './kinesthetic';
+import { distortion, granularity, need, perspective, tone, unsaid } from './social';
+import { ecology, specimen, taxon } from './naturalist';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
 export interface Draft {
@@ -68,5 +73,41 @@ function build(type: Variant['type'], dim: Variant['dim'], motion: Variant['moti
       return oddWord(rng, level);
     case 'sequence':
       return sequence(rng, level);
+    case 'series':
+      return series(rng, level);
+    case 'syllogism':
+      return syllogism(rng, level);
+    case 'conditional':
+      return conditional(rng, level);
+    case 'beat':
+      return beat(rng, level);
+    case 'contour':
+      return contour(rng, level);
+    case 'deviation':
+      return deviation(rng, level);
+    case 'hands':
+      return hands(rng, level);
+    case 'path':
+      return path(rng, level);
+    case 'balance':
+      return balance(rng, level);
+    case 'perspective':
+      return perspective(rng, level);
+    case 'unsaid':
+      return unsaid(rng, level);
+    case 'tone':
+      return tone(rng, level);
+    case 'distortion':
+      return distortion(rng, level);
+    case 'granularity':
+      return granularity(rng, level);
+    case 'need':
+      return need(rng, level);
+    case 'taxon':
+      return taxon(rng, level);
+    case 'specimen':
+      return specimen(rng, level);
+    case 'ecology':
+      return ecology(rng, level);
   }
 }

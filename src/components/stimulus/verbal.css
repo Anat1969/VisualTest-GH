@@ -114,3 +114,85 @@
   background: var(--surface);
 }
 .vb-chip:first-child { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+/* number series: boxes on a rail, read left to right */
+.vb-series {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s5) var(--s3);
+  position: relative;
+}
+.vb-num-box {
+  min-width: 3.2rem;
+  padding: var(--s3) var(--s3);
+  text-align: center;
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: clamp(1.25rem, 4vw, 1.9rem);
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-2);
+}
+.vb-num-box.q {
+  color: var(--accent);
+  border: 2px dashed var(--accent);
+  background: var(--accent-soft);
+  box-shadow: none;
+}
+
+/* quoted speech: the material of the social drills */
+.vb-quote {
+  position: relative;
+  margin: 0;
+  padding: var(--s5) var(--s5) var(--s5) var(--s5);
+  padding-inline-start: calc(var(--s5) + 0.6rem);
+  max-width: 56ch;
+  font-size: var(--fs-md);
+  line-height: 1.75;
+  color: var(--ink);
+  background: var(--surface);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-1);
+}
+.vb-quote-mark {
+  position: absolute;
+  inset-inline-start: 0.5rem;
+  top: -0.35rem;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.35;
+}
+
+/* audio stimulus */
+.audio-stim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s5);
+}
+.audio-stim .pulse {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+}
+.audio-stim .pulse.on {
+  animation: pulse-hit 260ms ease-out;
+}
+@keyframes pulse-hit {
+  0% { background: var(--accent); border-color: var(--accent); transform: scale(1.12); }
+  100% { background: var(--surface); transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .audio-stim .pulse.on { animation: none; background: var(--accent-soft); }
+}

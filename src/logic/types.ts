@@ -14,7 +14,31 @@ export type TestType =
   // intelligences block · linguistic
   | 'analogy'
   | 'oddword'
-  | 'sequence';
+  | 'sequence'
+  // logical
+  | 'series'
+  | 'syllogism'
+  | 'conditional'
+  // musical
+  | 'beat'
+  | 'contour'
+  | 'deviation'
+  // kinesthetic
+  | 'hands'
+  | 'path'
+  | 'balance'
+  // interpersonal
+  | 'perspective'
+  | 'unsaid'
+  | 'tone'
+  // intrapersonal
+  | 'distortion'
+  | 'granularity'
+  | 'need'
+  // naturalist
+  | 'taxon'
+  | 'specimen'
+  | 'ecology';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -148,8 +172,18 @@ export interface SceneSpec {
 /** Verbal material: a word pair, a word, a note, or numbered sentences. */
 export interface VerbalSpec {
   kind: 'verbal';
-  mode: 'pair' | 'pairOption' | 'word' | 'note' | 'sentences' | 'order';
+  mode: 'pair' | 'pairOption' | 'word' | 'note' | 'sentences' | 'order' | 'series' | 'quote';
   words: string[];
+}
+
+/** Sound to play: notes on a step grid. Rendered as a play button and a neutral pulse. */
+export interface AudioSpec {
+  kind: 'audio';
+  bpm: number;
+  steps: number; // grid length (sixteenth-like steps)
+  notes: { step: number; midi: number; len?: number }[];
+  repeat: number;
+  label: string;
 }
 
 /** Answer given as words, e.g. a direction or a weight. */
@@ -171,7 +205,8 @@ export type VisualSpec =
   | MatrixSpec
   | SceneSpec
   | TextSpec
-  | VerbalSpec;
+  | VerbalSpec
+  | AudioSpec;
 
 /* ---------- Dynamic animation: plays to a question point, then continues after answer ---------- */
 
@@ -238,10 +273,36 @@ export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
   analogy: [['2D', 'static']],
   oddword: [['2D', 'static']],
   sequence: [['2D', 'static']],
+  series: [['2D', 'static']],
+  syllogism: [['2D', 'static']],
+  conditional: [['2D', 'static']],
+  beat: [['2D', 'static']],
+  contour: [['2D', 'static']],
+  deviation: [['2D', 'static']],
+  hands: [['2D', 'static']],
+  path: [['2D', 'static']],
+  balance: [['2D', 'static']],
+  perspective: [['2D', 'static']],
+  unsaid: [['2D', 'static']],
+  tone: [['2D', 'static']],
+  distortion: [['2D', 'static']],
+  granularity: [['2D', 'static']],
+  need: [['2D', 'static']],
+  taxon: [['2D', 'static']],
+  specimen: [['2D', 'static']],
+  ecology: [['2D', 'static']],
 };
 
 /** Drills of the intelligences block (kept out of the standard skill map). */
-export const INTEL_TYPES: TestType[] = ['analogy', 'oddword', 'sequence'];
+export const INTEL_TYPES: TestType[] = [
+  'analogy', 'oddword', 'sequence',
+  'series', 'syllogism', 'conditional',
+  'beat', 'contour', 'deviation',
+  'hands', 'path', 'balance',
+  'perspective', 'unsaid', 'tone',
+  'distortion', 'granularity', 'need',
+  'taxon', 'specimen', 'ecology',
+];
 export const ALL_TYPES: TestType[] = [...TEST_TYPES, ...INTEL_TYPES];
 export const LEVELS: Level[] = [1, 2, 3];
 
@@ -259,6 +320,24 @@ export const TYPE_LABEL: Record<TestType, string> = {
   analogy: 'יחסי משמעות',
   oddword: 'מיון ודיוק',
   sequence: 'רצף וטיעון',
+  series: 'סדרות ודפוסים',
+  syllogism: 'היסק מהנחות',
+  conditional: 'אם, אז',
+  beat: 'זיכרון קצב',
+  contour: 'קו מנגינה',
+  deviation: 'זיהוי סטייה',
+  hands: 'יד ימין, יד שמאל',
+  path: 'תכנון מסלול',
+  balance: 'שיווי משקל',
+  perspective: 'נקודת המבט של האחר',
+  unsaid: 'מה שלא נאמר',
+  tone: 'טון וכוונה',
+  distortion: 'הטיות חשיבה',
+  granularity: 'דיוק רגשי',
+  need: 'רגש וצורך',
+  taxon: 'גילוי כלל מיון',
+  specimen: 'ההבדל הדק',
+  ecology: 'קשרים במערכת',
 };
 
 export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';
