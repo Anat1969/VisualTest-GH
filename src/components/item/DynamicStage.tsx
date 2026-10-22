@@ -5,6 +5,7 @@ import { Cubes3D } from '../stimulus/Cubes3D';
 import { NetFolding } from '../stimulus/Net';
 import { PaperFrame, PaperHoles } from '../stimulus/Paper';
 import { Poly2D } from '../stimulus/Poly2D';
+import { Scene } from '../stimulus/Scene';
 import { unfold } from '../../logic/paper';
 
 export type StagePhase = 'play' | 'paused' | 'reveal' | 'done';
@@ -68,7 +69,7 @@ export function DynamicStage({
       setP(2);
       return;
     }
-    const len = spec.kind === 'paperFold' ? 500 : spec.durationMs;
+    const len = spec.kind === 'paperFold' ? 500 : spec.kind === 'scene' ? spec.revealMs : spec.durationMs;
     const start = performance.now();
     const tick = (now: number) => {
       const x = Math.min(1, (now - start) / len);
@@ -91,6 +92,9 @@ export function DynamicStage({
       const angle = p <= 1 ? spec.from + (spec.to - spec.from) * playT : spec.to + (spec.reveal - spec.to) * revT;
       return <Cubes3D spec={spec.base} rot={mulM(axisAngle(spec.axis, angle), spec.base.rot)} label="צורה תלת-ממדית בתנועת סיבוב" />;
     }
+    case 'scene':
+      // physical motion runs at constant speed, so no easing here
+      return <Scene spec={spec.scene} t={p} revealing={p > 1 || reveal} />;
     case 'netFold': {
       const t = p <= 1 ? spec.pauseAt * playT : spec.pauseAt + (1 - spec.pauseAt) * revT;
       return <NetFolding spec={spec.net} t={t} />;

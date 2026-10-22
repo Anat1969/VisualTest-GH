@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LIBRARY, RULES_TEXT, SOURCE_NOTE } from '../content/library';
+import { CATEGORIES } from '../logic/types';
 
 export default function Library() {
   return (
@@ -7,12 +8,25 @@ export default function Library() {
       <header className="page-head">
         <span className="eyebrow">ספרייה</span>
         <h1>סוגי המבחן</h1>
-        <p className="lead">מה כל סוג בודק, איך הוא נראה, ואיך לגשת אליו. הסבר קצר לפני תרגול חוסך טעויות כלל.</p>
+        <p className="lead">עשרה סוגים בארבעה תחומים. מה כל סוג בודק, איך הוא נראה, ואיך לגשת אליו. הסבר קצר לפני תרגול חוסך טעויות כלל.</p>
+        <nav className="row" aria-label="תוכן הספרייה">
+          {LIBRARY.map((e) => (
+            <a key={e.type} className="tag" href={`#lib-${e.type}`}>
+              {e.title}
+            </a>
+          ))}
+        </nav>
       </header>
 
-      {LIBRARY.map((e) => (
-        <section key={e.type} className="card" aria-labelledby={`lib-${e.type}`}>
-          <h2 id={`lib-${e.type}`}>{e.title}</h2>
+      {CATEGORIES.map((c) => (
+        <div key={c.id} className="stack">
+          <div className="page-head">
+            <span className="eyebrow">{c.label}</span>
+            <p className="small muted">{c.blurb}</p>
+          </div>
+      {LIBRARY.filter((e) => c.types.includes(e.type)).map((e) => (
+        <section key={e.type} className="card" aria-labelledby={`lib-${e.type}`} id={`lib-${e.type}`} style={{ scrollMarginTop: 80 }}>
+          <h2>{e.title}</h2>
           <p className="lead">{e.measures}</p>
           <div className="grid-2">
             {e.formats.map((f) => (
@@ -46,6 +60,8 @@ export default function Library() {
             </Link>
           </div>
         </section>
+      ))}
+        </div>
       ))}
 
       <section className="card flat">

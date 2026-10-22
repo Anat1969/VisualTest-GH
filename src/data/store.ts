@@ -53,12 +53,18 @@ export interface State {
 
 const KEY = 'merhav:v1';
 
+/** Data saved before a test type existed has no level rows for it: add them as fresh rows. */
+function withAllTypes(rows: MasteryRow[]): MasteryRow[] {
+  const have = new Set(rows.map((r) => `${r.test_type}:${r.level}`));
+  return [...rows, ...initialMastery().filter((r) => !have.has(`${r.test_type}:${r.level}`))];
+}
+
 function load(): State {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const s = JSON.parse(raw) as State;
-      return { ...s, sync: { status: 'idle' } };
+      return { ...s, mastery: withAllTypes(s.mastery), sync: { status: 'idle' } };
     }
   } catch {
     /* fall through to a fresh state */

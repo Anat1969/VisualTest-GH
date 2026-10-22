@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../data/store';
 import { currentLevel, rowOf } from '../logic/mastery';
-import { ITEMS_PER_MODE, SECONDS_PER_ITEM, type SessionConfig } from '../logic/session';
+import { ITEMS_PER_MODE, secondsFor, type SessionConfig } from '../logic/session';
 import type { Level, Mode, TestType } from '../logic/types';
-import { LEVELS, TEST_TYPES, TYPE_LABEL } from '../logic/types';
+import { CATEGORIES, LEVELS, TEST_TYPES, TYPE_LABEL, TYPE_VARIANTS, type Category } from '../logic/types';
 
 const COPY: Record<'practice' | 'exam' | 'simulation', { eyebrow: string; title: string; lead: string }> = {
   practice: {
@@ -35,16 +35,21 @@ export default function Setup({ mode }: { mode: 'practice' | 'exam' | 'simulatio
   const [levelChoice, setLevelChoice] = useState<Level | null>(null);
   const level = levelChoice ?? cur;
   const copy = COPY[mode];
+  const [cats, setCats] = useState<Category[]>(() => {
+    const c = params.get('cats');
+    return c ? (c.split(',') as Category[]) : CATEGORIES.map((x) => x.id);
+  });
+  const simTypes = CATEGORIES.filter((c) => cats.includes(c.id)).flatMap((c) => c.types);
 
   const levels = useMemo(
-    () => ({ rotation: currentLevel(mastery, 'rotation'), folding: currentLevel(mastery, 'folding') }) as Record<TestType, Level>,
+    () => Object.fromEntries(TEST_TYPES.map((t) => [t, currentLevel(mastery, t)])) as Record<TestType, Level>,
     [mastery],
   );
 
   const start = () => {
     const config: SessionConfig =
       mode === 'simulation'
-        ? { mode: 'simulation', types: [...TEST_TYPES], levels }
+        ? { mode: 'simulation', types: simTypes, levels }
         : { mode: mode === 'practice' ? sub : 'exam', types: [type], levels: { ...levels, [type]: level } };
     navigate('/run', { state: config });
   };
@@ -79,18 +84,25 @@ export default function Setup({ mode }: { mode: 'practice' | 'exam' | 'simulatio
           <>
             <div className="stack">
               <span className="small muted">סוג מבחן</span>
-              <div className="seg">
-                {TEST_TYPES.map((t) => (
-                  <button
-                    key={t}
-                    aria-pressed={type === t}
-                    onClick={() => {
-                      setType(t);
-                      setLevelChoice(null);
-                    }}
-                  >
-                    {TYPE_LABEL[t]}
-                  </button>
+              <div className="type-picker">
+                {CATEGORIES.map((c) => (
+                  <div key={c.id} className="type-group">
+                    <span className="xs muted">{c.label}</span>
+                    <div className="seg">
+                      {c.types.map((t) => (
+                        <button
+                          key={t}
+                          aria-pressed={type === t}
+                          onClick={() => {
+                            setType(t);
+                            setLevelChoice(null);
+                          }}
+                        >
+                          {TYPE_LABEL[t]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -110,22 +122,38 @@ export default function Setup({ mode }: { mode: 'practice' | 'exam' | 'simulatio
             </div>
           </>
         ) : (
-          <div className="grid-2">
-            {TEST_TYPES.map((t) => (
-              <div key={t} className="card flat">
-                <strong>{TYPE_LABEL[t]}</strong>
-                <span className="muted small">רמה {levels[t]}</span>
-              </div>
-            ))}
+          <div className="stack">
+            <span className="small muted">תחומים בסבב</span>
+            <div className="grid-2">
+              {CATEGORIES.map((c) => {
+                const on = cats.includes(c.id);
+                return (
+                  <button
+                    key={c.id}
+                    className={`card flat pick ${on ? 'on' : ''}`}
+                    aria-pressed={on}
+                    onClick={() => setCats((v) => (on ? (v.length > 1 ? v.filter((x) => x !== c.id) : v) : [...v, c.id]))}
+                  >
+                    <strong>{c.label}</strong>
+                    <span className="xs muted">{c.types.map((t) => `${TYPE_LABEL[t]} (רמה ${levels[t]})`).join(' · ')}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
         <p className="small muted">
           {count} פריטים
           {effMode === 'exam' || effMode === 'simulation'
-            ? `, ${mode === 'simulation' ? 'זמן לפי רמת כל סוג' : `${SECONDS_PER_ITEM[level]} שניות לפריט`} (הערכת עבודה)`
+            ? `, ${mode === 'simulation' ? 'זמן לפי רמת כל סוג' : `${secondsFor(type, level)} שניות לפריט`} (הערכת עבודה)`
             : ', ללא הגבלת זמן'}
-          . תמהיל של 2D ו-3D, סטטי ודינמי.
+          .{' '}
+          {mode === 'simulation'
+            ? 'הסוגים מתחלפים, ולא יותר משניים מאותו סוג ברצף.'
+            : TYPE_VARIANTS[type].length > 1
+              ? `תמהיל של ${Array.from(new Set(TYPE_VARIANTS[type].map(([d]) => d))).join(' ו-')}, ${TYPE_VARIANTS[type].some(([, m]) => m === 'dynamic') ? 'סטטי ודינמי' : 'סטטי'}.`
+              : 'סוג זה מוצג בגרסה אחת.'}
         </p>
         <div className="row">
           <button className="btn primary lg" onClick={start}>

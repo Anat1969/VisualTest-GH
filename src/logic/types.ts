@@ -1,6 +1,16 @@
 // Domain model shared by generators, sessions and storage.
 
-export type TestType = 'rotation' | 'folding';
+export type TestType =
+  | 'rotation'
+  | 'folding'
+  | 'sections'
+  | 'plans'
+  | 'hidden'
+  | 'speed'
+  | 'matrices'
+  | 'mechanics'
+  | 'statics'
+  | 'physics';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -24,6 +34,8 @@ export interface Cubes3DSpec {
   kind: 'cubes3d';
   cubes: V3[];
   rot: M3;
+  /** draws a fixed "front" arrow on the ground, for plan/elevation items */
+  front?: boolean;
 }
 
 export interface PaperFold {
@@ -72,9 +84,68 @@ export interface CubeViewSpec {
   right: CubeSlot;
 }
 
+export type Shape = 'circle' | 'square' | 'triangle' | 'diamond';
+export type Fill = 'empty' | 'hatched' | 'solid';
+export type Count = 1 | 2 | 3;
+export interface Glyph {
+  shape: Shape;
+  count: Count;
+  fill: Fill;
+}
+
+export interface GlyphSpec {
+  kind: 'glyph';
+  glyph: Glyph;
+}
+
+/** 3×3 matrix; the cell with `null` is the one to complete. Row-major. */
+export interface MatrixSpec {
+  kind: 'matrix';
+  cells: (Glyph | null)[];
+}
+
 export interface SwatchSpec {
   kind: 'swatch';
   face: FaceLook;
+}
+
+/* ---------- Scene: generic 2D drawing used by the technical and perception types ---------- */
+
+/** Named tones map to design tokens; any other string is used as a CSS color. */
+export type Tone = 'ink' | 'muted' | 'line' | 'accent' | 'accentSoft' | 'stim' | 'water' | 'paper' | 'sunk' | 'ok' | 'bad' | 'none' | (string & {});
+
+/** When a primitive is visible during a dynamic item: play = before the question point, pause = at it, reveal = after answering. */
+export type When = 'play' | 'pause' | 'reveal' | 'pre' | 'post';
+
+export interface PrimAnim {
+  spin?: number; // degrees per unit of time, around `c`
+  c?: P2;
+  path?: P2[]; // move a circle along this path during play
+  revealPath?: P2[]; // and along this one during reveal
+  from?: P2; // translate from this offset to zero during play
+}
+
+export type Prim = (
+  | { p: 'line'; pts: P2[]; closed?: boolean; fill?: Tone; tone?: Tone; w?: number; dash?: boolean; opacity?: number }
+  | { p: 'circle'; c: P2; r: number; fill?: Tone; tone?: Tone; w?: number; dash?: boolean }
+  | { p: 'text'; at: P2; text: string; size?: number; tone?: Tone; weight?: number; anchor?: 'start' | 'middle' | 'end' }
+  | { p: 'arrow'; pts: P2[]; tone?: Tone; w?: number; dash?: boolean }
+  | { p: 'gear'; c: P2; r: number; teeth: number; fill?: Tone; angle?: number; label?: string }
+  | { p: 'rect'; x: number; y: number; w: number; h: number; fill?: Tone; tone?: Tone; sw?: number; rx?: number }
+) & { when?: When; anim?: PrimAnim };
+
+export interface SceneSpec {
+  kind: 'scene';
+  box: [number, number, number, number]; // viewBox
+  prims: Prim[];
+  label?: string;
+}
+
+/** Answer given as words, e.g. a direction or a weight. */
+export interface TextSpec {
+  kind: 'text';
+  text: string;
+  sub?: string;
 }
 
 export type VisualSpec =
@@ -84,7 +155,11 @@ export type VisualSpec =
   | PaperHolesSpec
   | NetSpec
   | CubeViewSpec
-  | SwatchSpec;
+  | SwatchSpec
+  | GlyphSpec
+  | MatrixSpec
+  | SceneSpec
+  | TextSpec;
 
 /* ---------- Dynamic animation: plays to a question point, then continues after answer ---------- */
 
@@ -92,7 +167,8 @@ export type DynamicSpec =
   | { kind: 'rotate2d'; base: Poly2DSpec; from: number; to: number; reveal: number; durationMs: number }
   | { kind: 'rotate3d'; base: Cubes3DSpec; axis: V3; from: number; to: number; reveal: number; durationMs: number }
   | { kind: 'paperFold'; steps: PaperStepsSpec; durationMs: number }
-  | { kind: 'netFold'; net: NetSpec; pauseAt: number; durationMs: number };
+  | { kind: 'netFold'; net: NetSpec; pauseAt: number; durationMs: number }
+  | { kind: 'scene'; scene: SceneSpec; durationMs: number; revealMs: number };
 
 export interface Option {
   visual: VisualSpec;
@@ -122,13 +198,72 @@ export interface Variant {
   motion: Motion;
 }
 
-export const TEST_TYPES: TestType[] = ['rotation', 'folding'];
+export const TEST_TYPES: TestType[] = [
+  'rotation',
+  'folding',
+  'sections',
+  'plans',
+  'hidden',
+  'speed',
+  'matrices',
+  'mechanics',
+  'statics',
+  'physics',
+];
+
+/** Which 2D/3D × static/dynamic variants each type offers. */
+export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
+  rotation: [['2D', 'static'], ['2D', 'dynamic'], ['3D', 'static'], ['3D', 'dynamic']],
+  folding: [['2D', 'static'], ['2D', 'dynamic'], ['3D', 'static'], ['3D', 'dynamic']],
+  sections: [['3D', 'static'], ['3D', 'dynamic']],
+  plans: [['3D', 'static'], ['3D', 'dynamic']],
+  hidden: [['2D', 'static']],
+  speed: [['2D', 'static'], ['2D', 'dynamic']],
+  matrices: [['2D', 'static']],
+  mechanics: [['2D', 'static'], ['2D', 'dynamic']],
+  statics: [['2D', 'static']],
+  physics: [['2D', 'static'], ['2D', 'dynamic']],
+};
 export const LEVELS: Level[] = [1, 2, 3];
 
 export const TYPE_LABEL: Record<TestType, string> = {
   rotation: 'רוטציה מנטלית',
   folding: 'קיפול ופריסה',
+  sections: 'חתכים',
+  plans: 'תוכניות וחזיתות',
+  hidden: 'צורה חבויה',
+  speed: 'זריזות תפיסתית',
+  matrices: 'מטריצות',
+  mechanics: 'מכניקה',
+  statics: 'סטטיקה',
+  physics: 'פיזיקה אינטואיטיבית',
 };
+
+export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';
+
+export const CATEGORIES: { id: Category; label: string; blurb: string; types: TestType[] }[] = [
+  {
+    id: 'spatial',
+    label: 'דמיון מרחבי',
+    blurb: 'להחזיק גוף בראש ולפעול עליו: לסובב, לקפל, לחתוך, להטיל.',
+    types: ['rotation', 'folding', 'sections', 'plans'],
+  },
+  {
+    id: 'perception',
+    label: 'תפיסה חזותית',
+    blurb: 'לראות מהר ומדויק: לזהות פרט בתוך שלם, להבחין בהבדל קטן.',
+    types: ['hidden', 'speed'],
+  },
+  { id: 'reasoning', label: 'הסקה מופשטת', blurb: 'לגלות כלל במבנה חזותי ולהחיל אותו.', types: ['matrices'] },
+  {
+    id: 'technical',
+    label: 'הבנה טכנית',
+    blurb: 'לחזות איך מערכת פיזית תתנהג: גלגלי שיניים, מנופים, תנועה ונוזלים.',
+    types: ['mechanics', 'statics', 'physics'],
+  },
+];
+
+export const categoryOf = (t: TestType) => CATEGORIES.find((c) => c.types.includes(t))!;
 
 export const MODE_LABEL: Record<Mode, string> = {
   explain: 'הסבר',
