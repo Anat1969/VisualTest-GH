@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Empty, pct } from '../components/ui/States';
 import { adoptSyncKey, resetLocal, syncNow, useStore } from '../data/store';
 import { formatKey, isValidSyncKey, parseKey } from '../auth/syncKey';
+import { joinAttempts } from '../logic/diagnostics';
 import { rowOf } from '../logic/mastery';
+import { BlockBSummary } from '../components/intel/BlockB';
 import { MODE_LABEL, TEST_TYPES, TYPE_LABEL, type Level } from '../logic/types';
 import './run.css';
 
@@ -33,7 +35,8 @@ function Trend({ values }: { values: number[] }) {
 }
 
 export default function Progress() {
-  const { sessions, mastery, syncKey, sync, unsynced } = useStore((s) => s);
+  const { sessions, mastery, syncKey, sync, unsynced, attempts, questions } = useStore((s) => s);
+  const rows = useMemo(() => joinAttempts(attempts, questions, sessions).filter((r) => r.mode !== 'explain'), [attempts, questions, sessions]);
   const [code, setCode] = useState('');
   const [copied, setCopied] = useState(false);
   const scored = sessions.filter((s) => s.mode !== 'explain');
@@ -85,6 +88,14 @@ export default function Progress() {
             </div>
           </article>
         ))}
+      </section>
+
+      <section className="stack" aria-labelledby="bb-prog">
+        <div className="page-head">
+          <h2 id="bb-prog">בלוק ב: האינטליגנציות</h2>
+          <p className="small muted">אותם כללי מעבר: שני סשנים רצופים עם 80% ומעלה מעלים רמה.</p>
+        </div>
+        <BlockBSummary rows={rows} mastery={mastery} mode="levels" />
       </section>
 
       {scored.length >= 2 && (

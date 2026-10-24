@@ -196,3 +196,54 @@
 @media (prefers-reduced-motion: reduce) {
   .audio-stim .pulse.on { animation: none; background: var(--accent-soft); }
 }
+.audio-stim.silent .pitch-rail {
+  position: relative;
+  width: 72px;
+  height: 120px;
+  border-inline: 1px dashed var(--line-strong);
+  background: repeating-linear-gradient(to top, transparent 0 19px, var(--line) 19px 20px);
+}
+.audio-stim.silent .pulse {
+  position: absolute;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  margin-bottom: -12px;
+  transition: bottom 80ms linear;
+}
+.audio-stim .btn.sm { min-height: 32px; font-size: var(--fs-xs); padding: 2px var(--s3); }
+
+/* scale with a gap (emotional intensity) */
+.vb-gap { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s2); padding: var(--s5) var(--s3); }
+.vb-gap .vb-num-box { font-size: clamp(1.05rem, 3.2vw, 1.5rem); min-width: 5.5rem; }
+.vb-gap-end { padding-inline: var(--s2); }
+
+/* code listing: left to right, monospace, numbered */
+.vb-code {
+  margin: 0;
+  width: min(100%, 560px);
+  padding: var(--s4);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: var(--fs-md);
+  line-height: 1.7;
+  background: #1f2a37;
+  color: #e9edf2;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-2);
+  overflow-x: auto;
+  text-align: left;
+  white-space: pre;
+  display: flex;
+  flex-direction: column;
+}
+.vb-code-line { display: block; }
+.vb-code-n { display: inline-block; width: 2ch; margin-right: 1.5ch; color: #7d8a99; text-align: right; user-select: none; }
+
+/* data table */
+.vb-table-wrap { width: min(100%, 620px); overflow-x: auto; padding: var(--s2); }
+.vb-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); background: var(--surface); }
+.vb-table th, .vb-table td { padding: 6px var(--s3); border-bottom: 1px solid var(--line); text-align: start; }
+.vb-table th { font-weight: 700; color: var(--ink-2); border-bottom: 2px solid var(--line-strong); }
+.vb-table td.num { font-variant-numeric: tabular-nums; }
+.vb-table tbody tr:nth-child(even) { background: var(--surface-sunk); }

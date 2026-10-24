@@ -192,3 +192,4 @@
   .logo-name { display: none; }
   .logo-pop { position: fixed; top: calc(var(--nav-h) + 4px); inset-inline: var(--s3); min-width: 0; }
 }
+.logo-ai { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.04em; color: var(--ink-2); margin-inline-start: 4px; }

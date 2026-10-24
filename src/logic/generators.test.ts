@@ -48,6 +48,18 @@ const VARIANTS: Variant[] = [
   { type: 'taxon', dim: '2D', motion: 'static' },
   { type: 'specimen', dim: '2D', motion: 'static' },
   { type: 'ecology', dim: '2D', motion: 'static' },
+  { type: 'values', dim: '2D', motion: 'static' },
+  { type: 'premise', dim: '2D', motion: 'static' },
+  { type: 'concept', dim: '2D', motion: 'static' },
+  { type: 'intensity', dim: '2D', motion: 'static' },
+  { type: 'regulation', dim: '2D', motion: 'static' },
+  { type: 'signal', dim: '2D', motion: 'static' },
+  { type: 'trace', dim: '2D', motion: 'static' },
+  { type: 'query', dim: '2D', motion: 'static' },
+  { type: 'pipeline', dim: '2D', motion: 'static' },
+  { type: 'loop', dim: '2D', motion: 'static' },
+  { type: 'stock', dim: '2D', motion: 'static' },
+  { type: 'effects', dim: '2D', motion: 'static' },
 ];
 
 describe('cube nets', () => {

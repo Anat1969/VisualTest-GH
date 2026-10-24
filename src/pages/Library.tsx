@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import { LIBRARY, RULES_TEXT, SOURCE_NOTE } from '../content/library';
+import { INTELLIGENCES, PROGRAMS } from '../content/intelligences';
 import { CATEGORIES } from '../logic/types';
+import { intelVars } from './Intelligences';
+import '../components/intel/intel.css';
 
 export default function Library() {
   return (
@@ -8,13 +11,16 @@ export default function Library() {
       <header className="page-head">
         <span className="eyebrow">ספרייה</span>
         <h1>סוגי המבחן</h1>
-        <p className="lead">עשרה סוגים בארבעה תחומים. מה כל סוג בודק, איך הוא נראה, ואיך לגשת אליו. הסבר קצר לפני תרגול חוסך טעויות כלל.</p>
+        <p className="lead">בלוק א: עשרה סוגי מבחן בארבעה תחומים. בלוק ב: מערכי התרגול של האינטליגנציות. מה כל תרגיל בודק ואיך לגשת אליו. הסבר קצר לפני תרגול חוסך טעויות כלל.</p>
         <nav className="row" aria-label="תוכן הספרייה">
           {LIBRARY.map((e) => (
             <a key={e.type} className="tag" href={`#lib-${e.type}`}>
               {e.title}
             </a>
           ))}
+          <a className="tag accent" href="#block-b">
+            בלוק ב: אינטליגנציות
+          </a>
         </nav>
       </header>
 
@@ -63,6 +69,46 @@ export default function Library() {
       ))}
         </div>
       ))}
+
+      <div className="stack" id="block-b" style={{ scrollMarginTop: 80 }}>
+        <div className="page-head">
+          <span className="eyebrow">בלוק ב</span>
+          <h2>מערכי התרגול של האינטליגנציות</h2>
+          <p className="small muted">לכל אינטליגנציה תרגילים עם מפתח תשובות וכלים פתוחים. כאן מה כל מיומנות בודקת ואיך לגשת אליה.</p>
+        </div>
+        {INTELLIGENCES.filter((i) => PROGRAMS[i.id]).map((i) => {
+          const p = PROGRAMS[i.id]!;
+          return (
+            <section key={i.id} className="card lib-intel" style={intelVars(i)} id={`lib-intel-${i.id}`}>
+              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <h2>
+                  <span className="bb-num">{i.number}</span> {i.name}
+                </h2>
+                <Link className="btn" to={`/intelligences/${i.id}`}>
+                  למערך
+                </Link>
+              </div>
+              <p className="small muted">{p.premise}</p>
+              <div className="grid-2">
+                {p.skills.map((s) => (
+                  <div key={s.id} className="card flat">
+                    <div className="row" style={{ justifyContent: 'space-between' }}>
+                      <strong>{s.name}</strong>
+                      <span className="tag">{s.drill ? 'תרגיל עם מפתח' : 'כלי פתוח'}</span>
+                    </div>
+                    <p className="small">{s.what}</p>
+                    <ul className="stack xs">
+                      {s.strategies.map((x) => (
+                        <li key={x}>{x}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
 
       <section className="card flat">
         <h2>כללי המסלול</h2>

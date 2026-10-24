@@ -13,6 +13,9 @@ import { beat, contour, deviation } from './musical';
 import { balance, hands, path } from './kinesthetic';
 import { distortion, granularity, need, perspective, tone, unsaid } from './social';
 import { ecology, specimen, taxon } from './naturalist';
+import { concept, intensity, premise, regulation, signal, values } from './inner';
+import { pipeline, query, trace } from './digital';
+import { effects, loop, stock } from './systems';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
 export interface Draft {
@@ -109,5 +112,29 @@ function build(type: Variant['type'], dim: Variant['dim'], motion: Variant['moti
       return specimen(rng, level);
     case 'ecology':
       return ecology(rng, level);
+    case 'values':
+      return values(rng, level);
+    case 'premise':
+      return premise(rng, level);
+    case 'concept':
+      return concept(rng, level);
+    case 'intensity':
+      return intensity(rng, level);
+    case 'regulation':
+      return regulation(rng, level);
+    case 'signal':
+      return signal(rng, level);
+    case 'trace':
+      return trace(rng, level);
+    case 'query':
+      return query(rng, level);
+    case 'pipeline':
+      return pipeline(rng, level);
+    case 'loop':
+      return loop(rng, level);
+    case 'stock':
+      return stock(rng, level);
+    case 'effects':
+      return effects(rng, level);
   }
 }

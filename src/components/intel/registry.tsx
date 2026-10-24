@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { ToolId } from '../../content/intelligences';
 import { TimingLab, TraceLab } from './BodyTools';
 import { CompressLab } from './CompressLab';
+import { BreathPacer, EmotionTranslator, LoopMapper, QueryLab, StepDebugger, StockSim, TenTenTen, ValuesCompass } from './ExtTools';
 import { ChainLab, PatternLab } from './LogicTools';
 import { Sequencer, Tapper } from './MusicTools';
 import { KeyBuilder, ObservationJournal } from './NatureTools';
@@ -35,4 +36,12 @@ export const TOOLS: Record<ToolId, ToolDef> = {
   calibration: { title: 'הערכה מול מציאות', blurb: 'מעריכים את הדיוק שלך בכל תרגיל, ומשווים לנתונים האמיתיים מהאפליקציה.', render: ({ color }) => <Calibration color={color} /> },
   key: { title: 'בונה מפתח הגדרה', blurb: 'בונים מפתח של שאלות כן ולא שמבחין בין שמונה עלים. מפתח טוב שואל מעט ומפצל שווה.', render: ({ color }) => <KeyBuilder color={color} /> },
   journal: { title: 'יומן תצפית', blurb: 'תצפית אחת ביום: מה, איפה, איך זה נראה, ובמה זה שונה מהדומה לו.', render: () => <ObservationJournal /> },
+  compass: { title: 'מצפן ערכים', blurb: 'בוחרים שישה ערכים, ומכריעים ביניהם שניים-שניים. הדירוג שיוצא לא תמיד זה שציפית לו.', render: ({ color }) => <ValuesCompass color={color} /> },
+  horizons: { title: 'מבט מהסוף: 10-10-10', blurb: 'החלטה אחת, שתי אפשרויות, שלושה טווחי זמן. כשהטווחים לא מסכימים, ההחלטה היא על ערכים.', render: ({ color }) => <TenTenTen color={color} /> },
+  breath: { title: 'נשימה מווסתת', blurb: 'עיגול שגדל בשאיפה וקטן בנשיפה. עוקבים אחריו שתי דקות.', render: ({ color }) => <BreathPacer color={color} /> },
+  translator: { title: 'מתרגם רגש', blurb: 'שם, עוצמה, סימן ופעולה אחת. הרישום מראה אילו רגשות חוזרים ומה עוזר.', render: ({ color }) => <EmotionTranslator color={color} /> },
+  debugger: { title: 'צעד אחר צעד', blurb: 'מריצים תוכנית קצרה שורה אחר שורה ורואים כל משתנה משתנה.', render: ({ color }) => <StepDebugger color={color} /> },
+  querylab: { title: 'מעבדת סינון', blurb: 'בונים סינון ורואים מיד אילו שורות עוברות. כך מרגישים "וגם", "או" ו"לא".', render: ({ color }) => <QueryLab color={color} /> },
+  stocksim: { title: 'מלאי עם עיכוב', blurb: 'מלאי שמכוון ליעד אבל רואה את עצמו באיחור. מעלים עיכוב ורואים חריגה ותנודה.', render: ({ color }) => <StockSim color={color} /> },
+  loopmap: { title: 'מפת לולאות', blurb: 'כותבים קשרים, והמפה מוצאת כל לולאה ואומרת אם היא מחזקת או מאזנת.', render: ({ color }) => <LoopMapper color={color} /> },
 };

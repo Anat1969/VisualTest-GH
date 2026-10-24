@@ -3,6 +3,7 @@ import { Empty, Meter, pct } from '../components/ui/States';
 import { useStore } from '../data/store';
 import { byType, byVariant, joinAttempts, statOf, type Stat } from '../logic/diagnostics';
 import { ERROR_LABEL, TEST_TYPES, TYPE_LABEL, TYPE_VARIANTS, type Dim, type ErrorType, type Motion } from '../logic/types';
+import { BlockBSummary } from '../components/intel/BlockB';
 import './run.css';
 
 const COLS: { dim: Dim; motion: Motion; label: string }[] = [
@@ -21,7 +22,7 @@ function heatColor(s: Stat) {
 }
 
 export default function Diagnosis() {
-  const { attempts, questions, sessions } = useStore((s) => s);
+  const { attempts, questions, sessions, mastery } = useStore((s) => s);
   const [range, setRange] = useState<'14' | 'all'>('all');
   const rows = useMemo(() => {
     const all = joinAttempts(attempts, questions, sessions).filter((r) => r.mode !== 'explain');
@@ -98,7 +99,7 @@ export default function Diagnosis() {
           </section>
 
           <section className="card">
-            <h2>מפת חוזקות</h2>
+            <h2>מפת חוזקות: בלוק א</h2>
             <p className="small muted">ירוק: 80% ומעלה. חרדל: 70% עד 80%. אדום: מתחת ל-70%. ריק: אין נתונים.</p>
             <div className="table-wrap">
               <div className="heat" role="table" aria-label="דיוק לפי סוג, ממד ותנועה">
@@ -132,6 +133,14 @@ export default function Diagnosis() {
                 ))}
               </div>
             </div>
+          </section>
+
+          <section className="stack" aria-labelledby="bb-diag">
+            <div className="page-head">
+              <h2 id="bb-diag">בלוק ב: תרגילי האינטליגנציות</h2>
+              <p className="small muted">דיוק וסוג הטעות הבולט בכל תרגיל עם מפתח. מוצגות רק אינטליגנציות שתרגלת.</p>
+            </div>
+            <BlockBSummary rows={rows} mastery={mastery} mode="diagnosis" />
           </section>
         </>
       )}

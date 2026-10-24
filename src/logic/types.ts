@@ -38,7 +38,23 @@ export type TestType =
   // naturalist
   | 'taxon'
   | 'specimen'
-  | 'ecology';
+  | 'ecology'
+  // existential
+  | 'values'
+  | 'premise'
+  | 'concept'
+  // emotional
+  | 'intensity'
+  | 'regulation'
+  | 'signal'
+  // digital
+  | 'trace'
+  | 'query'
+  | 'pipeline'
+  // systems
+  | 'loop'
+  | 'stock'
+  | 'effects';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -172,7 +188,7 @@ export interface SceneSpec {
 /** Verbal material: a word pair, a word, a note, or numbered sentences. */
 export interface VerbalSpec {
   kind: 'verbal';
-  mode: 'pair' | 'pairOption' | 'word' | 'note' | 'sentences' | 'order' | 'series' | 'quote';
+  mode: 'pair' | 'pairOption' | 'word' | 'note' | 'sentences' | 'order' | 'series' | 'quote' | 'gap' | 'code' | 'table';
   words: string[];
 }
 
@@ -291,6 +307,18 @@ export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
   taxon: [['2D', 'static']],
   specimen: [['2D', 'static']],
   ecology: [['2D', 'static']],
+  values: [['2D', 'static']],
+  premise: [['2D', 'static']],
+  concept: [['2D', 'static']],
+  intensity: [['2D', 'static']],
+  regulation: [['2D', 'static']],
+  signal: [['2D', 'static']],
+  trace: [['2D', 'static']],
+  query: [['2D', 'static']],
+  pipeline: [['2D', 'static']],
+  loop: [['2D', 'static']],
+  stock: [['2D', 'static']],
+  effects: [['2D', 'static']],
 };
 
 /** Drills of the intelligences block (kept out of the standard skill map). */
@@ -302,6 +330,10 @@ export const INTEL_TYPES: TestType[] = [
   'perspective', 'unsaid', 'tone',
   'distortion', 'granularity', 'need',
   'taxon', 'specimen', 'ecology',
+  'values', 'premise', 'concept',
+  'intensity', 'regulation', 'signal',
+  'trace', 'query', 'pipeline',
+  'loop', 'stock', 'effects',
 ];
 export const ALL_TYPES: TestType[] = [...TEST_TYPES, ...INTEL_TYPES];
 export const LEVELS: Level[] = [1, 2, 3];
@@ -338,6 +370,18 @@ export const TYPE_LABEL: Record<TestType, string> = {
   taxon: 'גילוי כלל מיון',
   specimen: 'ההבדל הדק',
   ecology: 'קשרים במערכת',
+  values: 'הערך שמאחורי ההחלטה',
+  premise: 'הנחה סמויה',
+  concept: 'הבחנה מושגית',
+  intensity: 'סולם עוצמה',
+  regulation: 'ויסות',
+  signal: 'רגש כנתון',
+  trace: 'מעקב אחרי קוד',
+  query: 'סינון נתונים',
+  pipeline: 'זרימת מידע',
+  loop: 'לולאות משוב',
+  stock: 'מלאי וזרימה',
+  effects: 'שרשרת השפעות',
 };
 
 export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';

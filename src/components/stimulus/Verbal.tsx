@@ -58,6 +58,59 @@ export function Verbal({ spec }: { spec: VerbalSpec }) {
           {spec.words[0]}
         </blockquote>
       );
+    case 'gap':
+      // a scale read from weak (right) to strong (left), with one slot missing
+      return (
+        <div className="vb-gap" role="img" aria-label={`סולם: ${spec.words.join(', ')}`}>
+          <span className="vb-gap-end xs muted">חלש</span>
+          {spec.words.map((w, i) => (
+            <span key={i} className={`vb-num-box ${w === '?' ? 'q' : ''}`}>
+              {w}
+            </span>
+          ))}
+          <span className="vb-gap-end xs muted">חזק</span>
+        </div>
+      );
+    case 'code':
+      return (
+        <pre className="vb-code" dir="ltr">
+          {spec.words.map((line, i) => (
+            <span key={i} className="vb-code-line">
+              <span className="vb-code-n" aria-hidden>
+                {i + 1}
+              </span>
+              {line}
+            </span>
+          ))}
+        </pre>
+      );
+    case 'table': {
+      const [head, ...rows] = spec.words.map((r) => r.split('|'));
+      return (
+        <div className="vb-table-wrap">
+          <table className="vb-table">
+            <thead>
+              <tr>
+                {head.map((h) => (
+                  <th key={h}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={i}>
+                  {r.map((c, j) => (
+                    <td key={j} className={/^\d+$/.test(c) ? 'num' : undefined}>
+                      {c}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
     case 'note':
       return <p className="vb-note">{spec.words[0]}</p>;
     case 'sentences':

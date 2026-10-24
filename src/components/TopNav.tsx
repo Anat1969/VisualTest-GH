@@ -73,8 +73,10 @@ function LogoMenu({ onInstall }: { onInstall: () => void }) {
 
   return (
     <div className="logo-menu" ref={ref}>
-      <button className={`logo-btn ${open ? 'open' : ''}`} aria-expanded={open} aria-haspopup="menu" aria-label="אד' ענת שטיבלמן: קישורים" onClick={() => setOpen((v) => !v)}>
-        <span className="logo-name">{OWNER}</span>
+      <button className={`logo-btn ${open ? 'open' : ''}`} aria-expanded={open} aria-haspopup="menu" aria-label="A & I אד' ענת שטיבלמן: קישורים" onClick={() => setOpen((v) => !v)}>
+        <span className="logo-name">
+          {OWNER} <span className="logo-ai" dir="ltr">A &amp; I</span>
+        </span>
         <LogoMark />
       </button>
       {open && (

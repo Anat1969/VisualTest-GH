@@ -66,7 +66,7 @@ export default function Intelligences() {
       <section className="stack" aria-labelledby="e-title">
         <div className="page-head">
           <h2 id="e-title">הרחבות</h2>
-          <p className="small muted">ארבע האינטליגנציות הנוספות, ואחריהן המיזוגים שנוצרים מהן.</p>
+          <p className="small muted">ארבע האינטליגנציות הנוספות, באותו מבנה: שלושה תרגילים עם מפתח ושני כלים.</p>
         </div>
         <div className="intel-grid">
           {ext.map((i) => (
