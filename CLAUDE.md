@@ -39,3 +39,7 @@ npm run build
 
 ## A&I logo button
 The top bar holds only the app name (links home), content navigation, and ONE logo button "אד' ענת שטיבלמן A&I" (`<ai-menu>` from https://appofapp-gh.vercel.app/ai-menu.js). Every editing and development action (העתקת קישור, שיחת הפיתוח, פרויקט המחקר, התקנת האפליקציה, edit mode, add, delete) lives only inside it, never as loose buttons. Standard: https://github.com/Anat1969/AppOfApp-GH/blob/main/docs/ai-menu-standard.md
+
+## מראה ב-GitHub
+- כש-Vercel חסום (מכסת פריסות יומית), יש מראה של האפליקציה בענף `live`, מוגש דרך https://raw.githack.com/Anat1969/VisualTest-GH/live/index.html
+- בנייה: `VITE_HASH=1 npx vite build --outDir <dir>` (ניתוב hash ונתיבים יחסיים), ואז דחיפת התיקייה כקומיט יחיד לענף `live`. בלי service worker במראה.
