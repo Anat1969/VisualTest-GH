@@ -217,3 +217,22 @@
   .fusion-lbl.col { width: 22px; }
   .fusion-lbl { width: 22px; font-size: 10px; }
 }
+
+/* ---------- block B summary (progress, diagnosis) ---------- */
+.bb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: var(--s3); }
+.bb-card { position: relative; padding: var(--s4); padding-top: calc(var(--s4) + 6px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.bb-card::before { content: ''; position: absolute; inset-inline: 0; top: 0; height: 6px; background: var(--intel); }
+.bb-head { display: flex; align-items: baseline; gap: var(--s2); color: var(--ink); text-decoration: none; margin-bottom: var(--s2); }
+.bb-num { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); color: var(--intel-ink); }
+.bb-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s2); }
+.bb-list li { display: flex; justify-content: space-between; align-items: center; gap: var(--s2); font-size: var(--fs-sm); }
+.bb-ladder { display: inline-flex; gap: 3px; align-items: flex-end; }
+.bb-ladder > span:not(.num) { width: 8px; border-radius: 2px; background: var(--surface-sunk); border: 1px solid var(--line-strong); }
+.bb-ladder > span:nth-child(1) { height: 8px; }
+.bb-ladder > span:nth-child(2) { height: 13px; }
+.bb-ladder > span:nth-child(3) { height: 18px; }
+.bb-ladder > span.open { background: var(--intel-wash); border-color: var(--intel); }
+.bb-ladder > span.passed { background: var(--intel); border-color: var(--intel); }
+.bb-ladder .num { margin-inline-start: 4px; }
+.bb-stat { display: flex; flex-direction: column; align-items: flex-end; }
+.lib-intel { border-top: 4px solid var(--intel); }

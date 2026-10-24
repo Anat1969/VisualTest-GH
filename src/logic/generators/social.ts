@@ -104,7 +104,7 @@ export function perspective(rng: Rng, level: Level): Draft {
 
 /* ================= curated choice drills ================= */
 
-function choice(rng: Rng, level: Level, bank: ChoiceItem[], prompt: string, explanation: string): Draft {
+export function choice(rng: Rng, level: Level, bank: ChoiceItem[], prompt: string, explanation: string): Draft {
   const item = rng.pick(bank);
   const far = rng.pick(bank.filter((b) => b !== item && b.answer !== item.near.text && !item.others.includes(b.answer))).answer;
   const options: Option[] = [
