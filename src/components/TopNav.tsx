@@ -35,7 +35,7 @@ export function TopNav() {
     <header className="nav">
       <div className="nav-inner">
         <Link to="/" className="brand" aria-label="מרחב: לדף הבית">
-          <img src="/icon.svg" alt="" width={28} height={28} />
+          <img src={`${import.meta.env.BASE_URL}icon.svg`} alt="" width={28} height={28} />
           <span>מרחב</span>
         </Link>
 
