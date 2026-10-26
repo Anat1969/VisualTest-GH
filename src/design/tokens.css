@@ -43,6 +43,13 @@
   /* depth: light from top-right, consistent everywhere */
   --radius: 10px;
   --radius-sm: 6px;
+  /* controls (buttons, chips, fields, clickable cards): square, per the house style */
+  --radius-ctl: 0;
+  --shadow-ctl: 0 1px 0 rgba(31, 42, 55, 0.12), 0 2px 5px rgba(31, 42, 55, 0.07);
+  --shadow-ctl-hover: 0 2px 0 rgba(31, 42, 55, 0.12), 0 8px 16px rgba(31, 42, 55, 0.13);
+  --shadow-ctl-press: inset 0 2px 4px rgba(31, 42, 55, 0.2);
+  --lift: -2px;
+  --sink: 1px;
   --shadow-1: -1px 1px 0 rgba(31, 42, 55, 0.04), -2px 4px 10px rgba(31, 42, 55, 0.05);
   --shadow-2: -2px 3px 0 rgba(31, 42, 55, 0.05), -6px 12px 28px rgba(31, 42, 55, 0.09);
 

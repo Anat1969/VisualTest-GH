@@ -1,0 +1,62 @@
+/*
+ * Controls layer: one place that makes every clickable thing square and tactile.
+ * Loaded after all component CSS (see main.tsx). The `html` prefix outranks single-class component rules.
+ * States: rest (shadow), hover (lift), active (sink, inset), selected (aria-pressed / .on / .active), disabled (flat).
+ */
+
+/* the set of things you can press */
+html :is(
+  .btn, .seg, .seg button, .chip, .tag, .option, .tile, .shortcut, .intel-card, .vs-btn, .tap-pad, .chain-kind,
+  .seq-cell, .stake-dot, .fusion-cell, .logo-item, .q-cond, .key-q, .key-open, .key-leaf, .vb-chip, .vb-num-box,
+  input:not([type='range']):not([type='checkbox']):not([type='radio']), select, textarea
+) {
+  border-radius: var(--radius-ctl);
+}
+
+/* raised surfaces */
+html :is(.btn:not(.ghost), .seg, .chip, .option, .tile, .intel-card, .vs-btn, .chain-kind, .stake-dot) {
+  box-shadow: var(--shadow-ctl);
+  transition:
+    transform var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+
+/* hover: lift */
+html :is(.btn, .chip, .option, .tile, .shortcut, .intel-card, .vs-btn, .chain-kind, .seq-cell, .fusion-cell):hover:not(:disabled) {
+  transform: translateY(var(--lift));
+  box-shadow: var(--shadow-ctl-hover);
+}
+html .btn.ghost:hover:not(:disabled) { box-shadow: var(--shadow-ctl); }
+
+/* press: sink */
+html :is(.btn, .chip, .option, .tile, .shortcut, .intel-card, .vs-btn, .chain-kind, .seq-cell, .seg button, .tap-pad):active:not(:disabled) {
+  transform: translateY(var(--sink));
+  box-shadow: var(--shadow-ctl-press);
+  transition-duration: 60ms;
+}
+
+/* selected */
+html :is(.chip.on, .chip[aria-pressed='true'], .seg button[aria-pressed='true']) {
+  box-shadow: var(--shadow-ctl-press);
+}
+
+/* disabled: flat, no motion */
+html :is(.btn, .chip, .option, .vs-btn, .seg button, .tap-pad):disabled {
+  box-shadow: none;
+  transform: none;
+}
+
+/* keyboard focus, everywhere the same */
+html :is(.btn, .chip, .option, .tile, .intel-card, .vs-btn, .chain-kind, .seq-cell, .fusion-cell, .stake-dot, .seg button, .logo-item):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html :is(.btn, .chip, .option, .tile, .shortcut, .intel-card, .vs-btn, .chain-kind, .seq-cell, .fusion-cell, .seg button, .tap-pad):is(:hover, :active) {
+    transform: none;
+  }
+}
