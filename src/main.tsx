@@ -4,6 +4,7 @@ import { BrowserRouter, HashRouter } from 'react-router-dom';
 import App from './App';
 import { initPwa } from './pwa';
 import './design/base.css';
+import './design/controls.css';
 
 // The GitHub-hosted mirror (built with VITE_HASH=1) lives under a sub-path, so it routes by hash.
 const Router = import.meta.env.VITE_HASH ? HashRouter : BrowserRouter;
