@@ -236,3 +236,38 @@
 .bb-ladder .num { margin-inline-start: 4px; }
 .bb-stat { display: flex; flex-direction: column; align-items: flex-end; }
 .lib-intel { border-top: 4px solid var(--intel); }
+
+/* ---------- one fusion ---------- */
+.fusion-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.5fr);
+  gap: var(--s6);
+  align-items: center;
+  padding: var(--s6);
+  padding-top: calc(var(--s6) + 10px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+.fusion-hero::before { content: ''; position: absolute; inset-inline: 0; top: 0; height: 10px; background: linear-gradient(90deg, var(--fa), var(--fb)); }
+.fusion-hero h1 { font-family: var(--font-display); margin: 0; }
+.fusion-insight { margin: 0; padding-inline-start: var(--s3); border-inline-start: 3px solid var(--fa); font-weight: 600; color: var(--ink-2); }
+.fusion-mark { position: relative; margin: 0; width: min(100%, 180px); aspect-ratio: 1; justify-self: center; }
+.fusion-mark span { position: absolute; width: 62%; height: 62%; border-radius: 50%; opacity: 0.82; mix-blend-mode: multiply; }
+.fusion-mark span:first-child { top: 0; inset-inline-start: 0; }
+.fusion-mark span:last-child { bottom: 0; inset-inline-end: 0; }
+.fusion-recognize { border-inline-start: 4px solid var(--fb); }
+.fusion-recognize p { margin: 0; }
+.fusion-mix { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+.fusion-mix-col { padding: var(--s3) var(--s4); border: 1px solid var(--line); border-top-width: 4px; background: var(--surface); }
+.fusion-mix-col ul { margin: var(--s2) 0 0; padding-inline-start: var(--s5); font-size: var(--fs-sm); }
+.fusion-challenge { border-top: 4px solid; border-image: linear-gradient(90deg, var(--fa), var(--fb)) 1; }
+.fusion-challenge p { font-size: var(--fs-md); line-height: 1.7; }
+@media (max-width: 640px) {
+  .fusion-hero { grid-template-columns: 1fr; padding: var(--s4); padding-top: calc(var(--s4) + 10px); }
+  .fusion-mark { width: 110px; }
+  .fusion-mix { grid-template-columns: 1fr; }
+}
