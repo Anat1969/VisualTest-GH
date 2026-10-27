@@ -1,7 +1,8 @@
 import { useState, type CSSProperties } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { INTELLIGENCES, INTELLIGENCES_APP_URL, PROGRAMS, type Intelligence } from '../content/intelligences';
-import { FUSION_NAMES, fusionKey } from '../content/fusions';
+import { FUSIONS, FUSION_NAMES, fusionKey, fusionSlug } from '../content/fusions';
+import { FUSION_PROGRAMS } from '../content/fusionPrograms';
 import '../components/intel/intel.css';
 
 /** CSS variables that carry an intelligence's colour through a page. */
@@ -84,18 +85,21 @@ export default function Intelligences() {
 function FusionRoom() {
   const all = INTELLIGENCES;
   const [sel, setSel] = useState<[number, number]>([1, 0]);
+  const navigate = useNavigate();
   const a = all[sel[0]];
   const b = all[sel[1]];
   const name = FUSION_NAMES[fusionKey(a.id, b.id)];
-  const ready = Boolean(PROGRAMS[a.id] && PROGRAMS[b.id]);
-  const readyCount = all.flatMap((x, i) => all.slice(0, i).map((y) => PROGRAMS[x.id] && PROGRAMS[y.id])).filter(Boolean).length;
+  const key = fusionKey(a.id, b.id);
+  const card = FUSIONS[key];
+  const own = FUSION_PROGRAMS[key];
+  const ownCount = Object.keys(FUSION_PROGRAMS).length;
   return (
     <section className="stack" aria-labelledby="f-title">
       <div className="page-head">
         <h2 id="f-title">חדר המיזוגים</h2>
         <p className="small muted" style={{ maxWidth: '64ch' }}>
-          66 כרטיסי המיזוג מאפליקציית האינטליגנציות. כל מיזוג יקבל מערך תרגול משלו, שנבנה מהמיומנויות של שתי האינטליגנציות שלו. ב-
-          <span className="num">{readyCount}</span> זוגות שתי האינטליגנציות כבר פעילות, ומהם נתחיל.
+          66 כרטיסי המיזוג מאפליקציית האינטליגנציות. לכל מיזוג דף משלו: הכרטיס, סבב משולב של תרגילי שתי האינטליגנציות, ואתגר יומי.
+          תרגילים ייעודיים למיזוג נבנים בהדרגה. כרגע יש ל-<span className="num">{ownCount}</span> מיזוגים.
         </p>
       </div>
       <div className="fusion-room">
@@ -107,7 +111,7 @@ function FusionRoom() {
               </span>
               {all.slice(0, i).map((y, j) => {
                 const on = sel[0] === i && sel[1] === j;
-                const both = PROGRAMS[x.id] && PROGRAMS[y.id];
+                const both = Boolean(FUSION_PROGRAMS[fusionKey(x.id, y.id)]);
                 return (
                   <button
                     key={y.id}
@@ -116,7 +120,8 @@ function FusionRoom() {
                     style={{ background: `linear-gradient(135deg, hsl(${x.hue}) 0 50%, hsl(${y.hue}) 50% 100%)` }}
                     aria-label={`${x.name} ו${y.name}: ${FUSION_NAMES[fusionKey(x.id, y.id)] ?? ''}`}
                     aria-pressed={on}
-                    onClick={() => setSel([i, j])}
+                    onClick={() => navigate(`/fusions/${fusionSlug(fusionKey(x.id, y.id))}`)}
+                    onFocus={() => setSel([i, j])}
                     onMouseEnter={() => setSel([i, j])}
                   />
                 );
@@ -140,10 +145,11 @@ function FusionRoom() {
           <p className="small">
             {a.name} ו{b.name}
           </p>
-          <span className={`tag ${ready ? 'ok' : ''}`}>{ready ? 'מוכן לבנייה: שתי האינטליגנציות פעילות' : 'ממתין למערכי ההרחבות'}</span>
-          <a className="small" href={INTELLIGENCES_APP_URL} target="_blank" rel="noreferrer">
-            הכרטיס המלא באפליקציית האינטליגנציות
-          </a>
+          {card && <p className="small">{card.definition}</p>}
+          <span className={`tag ${own ? 'ok' : ''}`}>{own ? 'יש תרגילים ייעודיים' : 'סבב משולב ואתגר יומי'}</span>
+          <Link className="btn primary" to={`/fusions/${fusionSlug(key)}`}>
+            לדף המיזוג
+          </Link>
         </article>
       </div>
     </section>

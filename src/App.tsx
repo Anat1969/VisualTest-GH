@@ -13,6 +13,7 @@ const Progress = lazy(() => import('./pages/Progress'));
 const Library = lazy(() => import('./pages/Library'));
 const Intelligences = lazy(() => import('./pages/Intelligences'));
 const IntelligencePage = lazy(() => import('./pages/IntelligencePage'));
+const FusionPage = lazy(() => import('./pages/FusionPage'));
 
 export default function App() {
   const { pathname } = useLocation();
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/library" element={<Library />} />
             <Route path="/intelligences" element={<Intelligences />} />
             <Route path="/intelligences/:id" element={<IntelligencePage />} />
+            <Route path="/fusions/:id" element={<FusionPage />} />
             <Route
               path="*"
               element={
