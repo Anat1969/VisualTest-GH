@@ -35,7 +35,6 @@ export default function FusionPage() {
   const own = FUSION_PROGRAMS[key];
   const drillsOf = (id: string) => PROGRAMS[id as keyof typeof PROGRAMS]?.skills.filter((s) => s.drill).map((s) => s.drill!) ?? [];
   const mixed = [...drillsOf(a.id), ...drillsOf(b.id)];
-  const ownDrills = own?.skills.filter((s) => s.drill).map((s) => s.drill!) ?? [];
   const levels = Object.fromEntries(ALL_TYPES.map((t) => [t, currentLevel(mastery, t)])) as Record<TestType, Level>;
   const go = (mode: Mode, types: TestType[]) => navigate('/run', { state: { mode, types, levels } satisfies SessionConfig });
   const today = todayKey();
@@ -84,13 +83,37 @@ export default function FusionPage() {
               : `עוד אין תרגילים ייעודיים למיזוג הזה. בינתיים: סבב שמערבב את תרגילי המפתח של שתי האינטליגנציות, כדי לעבור ביניהן באותו סשן.`}
           </p>
         </div>
-        {own && ownDrills.length > 0 && (
-          <div className="row">
-            <button className="btn primary lg" onClick={() => go('practice', ownDrills)}>
-              תרגילי המיזוג
-            </button>
-          </div>
-        )}
+        {own?.skills
+          .filter((s) => s.drill)
+          .map((s) => (
+            <article key={s.id} className="card fusion-skill">
+              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <h3>{s.name}</h3>
+                <span className="tag">תרגיל המיזוג · רמה {levels[s.drill!]}</span>
+              </div>
+              <p className="small">{s.what}</p>
+              <details>
+                <summary>איך לגשת</summary>
+                <ul className="small">
+                  {s.strategies.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </details>
+              <div className="row">
+                <button className="btn primary lg" onClick={() => go('practice', [s.drill!])}>
+                  תרגול
+                </button>
+                <button className="btn" onClick={() => go('explain', [s.drill!])}>
+                  הסבר
+                </button>
+                <button className="btn ghost" onClick={() => go('exam', [s.drill!])}>
+                  מבחן
+                </button>
+              </div>
+            </article>
+          ))}
+        {own && <p className="small muted">ולצד תרגיל המיזוג, סבב שמערבב את תרגילי שתי האינטליגנציות:</p>}
         <div className="fusion-mix">
           <div className="fusion-mix-col" style={{ borderTopColor: `hsl(${a.hue})` }}>
             <strong>{a.name}</strong>

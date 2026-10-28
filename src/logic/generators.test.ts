@@ -60,6 +60,16 @@ const VARIANTS: Variant[] = [
   { type: 'loop', dim: '2D', motion: 'static' },
   { type: 'stock', dim: '2D', motion: 'static' },
   { type: 'effects', dim: '2D', motion: 'static' },
+  { type: 'fx_channel', dim: '2D', motion: 'static' },
+  { type: 'fx_defaults', dim: '2D', motion: 'static' },
+  { type: 'fx_baseline', dim: '2D', motion: 'static' },
+  { type: 'fx_conditions', dim: '2D', motion: 'static' },
+  { type: 'fx_motion', dim: '2D', motion: 'static' },
+  { type: 'fx_floors', dim: '2D', motion: 'static' },
+  { type: 'fx_broken', dim: '2D', motion: 'static' },
+  { type: 'fx_loop', dim: '2D', motion: 'static' },
+  { type: 'fx_feed', dim: '2D', motion: 'static' },
+  { type: 'fx_resolution', dim: '2D', motion: 'static' },
 ];
 
 describe('cube nets', () => {

@@ -54,7 +54,18 @@ export type TestType =
   // systems
   | 'loop'
   | 'stock'
-  | 'effects';
+  | 'effects'
+  // fusion drills
+  | 'fx_channel'
+  | 'fx_defaults'
+  | 'fx_baseline'
+  | 'fx_conditions'
+  | 'fx_motion'
+  | 'fx_floors'
+  | 'fx_broken'
+  | 'fx_loop'
+  | 'fx_feed'
+  | 'fx_resolution';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -319,6 +330,16 @@ export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
   loop: [['2D', 'static']],
   stock: [['2D', 'static']],
   effects: [['2D', 'static']],
+  fx_channel: [['2D', 'static']],
+  fx_defaults: [['2D', 'static']],
+  fx_baseline: [['2D', 'static']],
+  fx_conditions: [['2D', 'static']],
+  fx_motion: [['2D', 'static']],
+  fx_floors: [['2D', 'static']],
+  fx_broken: [['2D', 'static']],
+  fx_loop: [['2D', 'static']],
+  fx_feed: [['2D', 'static']],
+  fx_resolution: [['2D', 'static']],
 };
 
 /** Drills of the intelligences block (kept out of the standard skill map). */
@@ -334,6 +355,8 @@ export const INTEL_TYPES: TestType[] = [
   'intensity', 'regulation', 'signal',
   'trace', 'query', 'pipeline',
   'loop', 'stock', 'effects',
+  // fusion drills
+  'fx_channel', 'fx_defaults', 'fx_baseline', 'fx_conditions', 'fx_motion', 'fx_floors', 'fx_broken', 'fx_loop', 'fx_feed', 'fx_resolution',
 ];
 export const ALL_TYPES: TestType[] = [...TEST_TYPES, ...INTEL_TYPES];
 export const LEVELS: Level[] = [1, 2, 3];
@@ -382,6 +405,16 @@ export const TYPE_LABEL: Record<TestType, string> = {
   loop: 'לולאות משוב',
   stock: 'מלאי וזרימה',
   effects: 'שרשרת השפעות',
+  fx_channel: 'רוחב פס רגשי',
+  fx_defaults: 'ברירת המחדל המקודדת',
+  fx_baseline: 'חריגה מהבסיס',
+  fx_conditions: 'הצירוף המפעיל',
+  fx_motion: 'השורה השגויה בתנועה',
+  fx_floors: 'קומות ההפשטה',
+  fx_broken: 'הקומה השבורה',
+  fx_loop: 'החלק המשתנה בלופ',
+  fx_feed: 'קריאת הדירוג',
+  fx_resolution: 'איפה הפירוט משתלם',
 };
 
 export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';
