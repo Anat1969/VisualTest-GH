@@ -16,6 +16,7 @@ import { ecology, specimen, taxon } from './naturalist';
 import { concept, intensity, premise, regulation, signal, values } from './inner';
 import { pipeline, query, trace } from './digital';
 import { effects, loop, stock } from './systems';
+import { fxBaseline, fxBroken, fxChannel, fxConditions, fxDefaults, fxFeed, fxFloors, fxLoop, fxMotion, fxResolution } from './fusion';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
 export interface Draft {
@@ -136,5 +137,25 @@ function build(type: Variant['type'], dim: Variant['dim'], motion: Variant['moti
       return stock(rng, level);
     case 'effects':
       return effects(rng, level);
+    case 'fx_channel':
+      return fxChannel(rng, level);
+    case 'fx_defaults':
+      return fxDefaults(rng, level);
+    case 'fx_baseline':
+      return fxBaseline(rng, level);
+    case 'fx_conditions':
+      return fxConditions(rng, level);
+    case 'fx_motion':
+      return fxMotion(rng, level);
+    case 'fx_floors':
+      return fxFloors(rng, level);
+    case 'fx_broken':
+      return fxBroken(rng, level);
+    case 'fx_loop':
+      return fxLoop(rng, level);
+    case 'fx_feed':
+      return fxFeed(rng, level);
+    case 'fx_resolution':
+      return fxResolution(rng, level);
   }
 }

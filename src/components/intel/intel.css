@@ -271,3 +271,5 @@
   .fusion-mark { width: 110px; }
   .fusion-mix { grid-template-columns: 1fr; }
 }
+.fusion-skill { border-inline-start: 4px solid var(--fa); }
+.fusion-skill h3 { margin: 0; }
