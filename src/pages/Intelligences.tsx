@@ -1,39 +1,12 @@
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { INTELLIGENCES, INTELLIGENCES_APP_URL, PROGRAMS, type Intelligence } from '../content/intelligences';
+import { IntelCard, intelVars, statusOf } from '../components/intel/IntelCard';
+import { INTELLIGENCES, INTELLIGENCES_APP_URL } from '../content/intelligences';
+
+export { IntelCard, intelVars, statusOf };
 import { FUSIONS, FUSION_NAMES, fusionKey, fusionSlug } from '../content/fusions';
 import { FUSION_PROGRAMS } from '../content/fusionPrograms';
 import '../components/intel/intel.css';
-
-/** CSS variables that carry an intelligence's colour through a page. */
-export function intelVars(i: Intelligence): CSSProperties {
-  const [h, s] = i.hue.split(',').map((x) => x.trim());
-  return {
-    ['--intel' as string]: `hsl(${i.hue})`,
-    ['--intel-wash' as string]: `hsla(${i.hue}, 0.12)`,
-    ['--intel-ink' as string]: `hsl(${h}, ${s}, 34%)`,
-  };
-}
-
-export function statusOf(i: Intelligence): { label: string; tone: string } {
-  if (PROGRAMS[i.id]) return { label: 'מערך תרגול פעיל', tone: 'ok' };
-  if (i.group === 'gardner') return { label: 'בבנייה', tone: 'accent' };
-  return { label: 'בשלב הבא', tone: '' };
-}
-
-export function IntelCard({ i }: { i: Intelligence }) {
-  const st = statusOf(i);
-  return (
-    <Link to={`/intelligences/${i.id}`} className={`intel-card ${PROGRAMS[i.id] ? '' : 'soon'}`} style={intelVars(i)}>
-      <span className="intel-num">{i.number}</span>
-      <span className="intel-name">{i.name}</span>
-      <span className="intel-meta">
-        {i.domain} · {i.keyword}
-      </span>
-      <span className={`tag ${st.tone}`}>{st.label}</span>
-    </Link>
-  );
-}
 
 export default function Intelligences() {
   const gardner = INTELLIGENCES.filter((i) => i.group === 'gardner');

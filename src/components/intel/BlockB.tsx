@@ -5,7 +5,7 @@ import { byType, type Joined } from '../../logic/diagnostics';
 import { currentLevel, rowOf } from '../../logic/mastery';
 import { ERROR_LABEL, type ErrorType, type Level } from '../../logic/types';
 import { pct } from '../ui/States';
-import { intelVars } from '../../pages/Intelligences';
+import { intelVars } from './IntelCard';
 import './intel.css';
 
 const ERRORS: ErrorType[] = ['encoding', 'transformation', 'wrong_rule', 'timeout'];

@@ -10,7 +10,7 @@ import { currentLevel, rowOf } from '../logic/mastery';
 import { tokenize } from '../logic/rhythm';
 import type { SessionConfig } from '../logic/session';
 import { ALL_TYPES, type Level, type Mode, type TestType } from '../logic/types';
-import { intelVars } from './Intelligences';
+import { intelVars } from '../components/intel/IntelCard';
 import '../components/intel/intel.css';
 import './home.css';
 

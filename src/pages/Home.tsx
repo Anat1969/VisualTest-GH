@@ -11,7 +11,7 @@ import type { SessionConfig } from '../logic/session';
 import { randomPolycube } from '../logic/shapes';
 import { CATEGORIES, ERROR_HINT, ERROR_LABEL, MODE_LABEL, TEST_TYPES, TYPE_LABEL, type ErrorType, type Level, type TestType } from '../logic/types';
 import { INTELLIGENCES } from '../content/intelligences';
-import { IntelCard } from './Intelligences';
+import { IntelCard } from '../components/intel/IntelCard';
 import '../components/intel/intel.css';
 import './home.css';
 
