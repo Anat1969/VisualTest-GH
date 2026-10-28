@@ -1,5 +1,6 @@
-// Minimal offline shell: network first, cache fallback.
-const CACHE = 'merhav-v1';
+// Offline shell. Hashed build files (/assets/*) never change, so they come from the cache first;
+// the page itself and everything else go to the network first, with the cache as fallback.
+const CACHE = 'merhav-v2';
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['/', '/index.html', '/icon.svg', '/manifest.webmanifest'])));
   self.skipWaiting();
@@ -10,14 +11,18 @@ self.addEventListener('activate', (e) => {
 });
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-  e.respondWith(
-    fetch(req)
-      .then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(req, copy));
-        return res;
-      })
-      .catch(() => caches.match(req).then((r) => r || caches.match('/index.html')))
-  );
+  const url = new URL(req.url);
+  if (req.method !== 'GET' || url.origin !== self.location.origin) return;
+  const put = (res) => {
+    if (res.ok) {
+      const copy = res.clone();
+      caches.open(CACHE).then((c) => c.put(req, copy));
+    }
+    return res;
+  };
+  if (url.pathname.startsWith('/assets/')) {
+    e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then(put)));
+    return;
+  }
+  e.respondWith(fetch(req).then(put).catch(() => caches.match(req).then((r) => r || caches.match('/index.html'))));
 });

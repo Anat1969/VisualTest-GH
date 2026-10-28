@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { LIBRARY, RULES_TEXT, SOURCE_NOTE } from '../content/library';
 import { INTELLIGENCES, PROGRAMS } from '../content/intelligences';
 import { CATEGORIES } from '../logic/types';
-import { intelVars } from './Intelligences';
+import { intelVars } from '../components/intel/IntelCard';
 import '../components/intel/intel.css';
 
 export default function Library() {
