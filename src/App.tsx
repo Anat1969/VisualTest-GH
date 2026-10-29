@@ -5,21 +5,47 @@ import { Empty, Loading } from './components/ui/States';
 import { syncNow } from './data/store';
 import Home from './pages/Home';
 
-const Setup = lazy(() => import('./pages/Setup'));
-const Run = lazy(() => import('./pages/Run'));
-const Summary = lazy(() => import('./pages/Summary'));
-const Diagnosis = lazy(() => import('./pages/Diagnosis'));
-const Progress = lazy(() => import('./pages/Progress'));
-const Library = lazy(() => import('./pages/Library'));
-const Intelligences = lazy(() => import('./pages/Intelligences'));
-const IntelligencePage = lazy(() => import('./pages/IntelligencePage'));
-const FusionPage = lazy(() => import('./pages/FusionPage'));
+// Every page except Home loads on demand. Once the first screen is up and the browser is idle,
+// all of them are fetched in the background, so moving between pages never waits on the network.
+const pages = {
+  Setup: () => import('./pages/Setup'),
+  Run: () => import('./pages/Run'),
+  Summary: () => import('./pages/Summary'),
+  Diagnosis: () => import('./pages/Diagnosis'),
+  Progress: () => import('./pages/Progress'),
+  Library: () => import('./pages/Library'),
+  Intelligences: () => import('./pages/Intelligences'),
+  IntelligencePage: () => import('./pages/IntelligencePage'),
+  FusionPage: () => import('./pages/FusionPage'),
+};
+const Setup = lazy(pages.Setup);
+const Run = lazy(pages.Run);
+const Summary = lazy(pages.Summary);
+const Diagnosis = lazy(pages.Diagnosis);
+const Progress = lazy(pages.Progress);
+const Library = lazy(pages.Library);
+const Intelligences = lazy(pages.Intelligences);
+const IntelligencePage = lazy(pages.IntelligencePage);
+const FusionPage = lazy(pages.FusionPage);
+
+function prefetchPages() {
+  const idle = (cb: () => void) =>
+    'requestIdleCallback' in window ? window.requestIdleCallback(cb, { timeout: 4000 }) : setTimeout(cb, 1500);
+  // Most likely next steps first: a drill run, then the content pages.
+  const order = [pages.Run, pages.Setup, pages.Intelligences, pages.IntelligencePage, pages.Library, pages.Summary, pages.Progress, pages.Diagnosis, pages.FusionPage];
+  const next = () => {
+    const load = order.shift();
+    if (load) load().catch(() => {}).finally(() => idle(next));
+  };
+  idle(next);
+}
 
 export default function App() {
   const { pathname } = useLocation();
   useEffect(() => window.scrollTo(0, 0), [pathname]);
   useEffect(() => {
     void syncNow();
+    prefetchPages();
   }, []);
 
   return (
