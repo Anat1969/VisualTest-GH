@@ -1,3 +1,4 @@
+import type { ChoiceItem } from './social';
 // Hand-written banks for the fusion drills (batch 1). Each entry has one answer that is clearly best.
 
 /* ---------- digital+emotional: emotional bandwidth ---------- */
@@ -197,8 +198,6 @@ export const BRANCH_PLANS: { title: string; parts: [string, string, string, stri
 ];
 
 /* ---------- emotional+existential: the value under the reaction ---------- */
-
-import type { ChoiceItem } from './social';
 
 export const BENEATH: ChoiceItem[] = [
   {
@@ -402,4 +401,11 @@ export const RECOVERY: { text: string; stage: Stage; why: string }[] = [
 
 /* ---------- emotional+spatial: the geometry of a hard talk ---------- */
 
-export const HARD_TALKS = ['שיחת משוב קשה לעובד', 'שיחה עם מתבגר על ציונים', 'שיחה עם שכן על רעש', 'שיחה עם בן זוג על כסף', 'בשורה רעה ללקוח'];
+export const SEATING: { text: string; right: string; why: string }[] = [
+  { text: 'שיחת משוב קשה לעובד על דוח שהגיש עם הרבה טעויות.', right: 'לשבת זה לצד זה מול הדוח, כשהדף ביניכם על השולחן', why: 'הדוח הופך ל"בעיה משותפת" ששניכם מסתכלים עליה, ולא אתם זה על זה.' },
+  { text: 'שיחה עם מתבגר על ציונים שירדו.', right: 'בנסיעה ברכב, זה לצד זה, כשהעיניים על הכביש', why: 'בלי קשר עין ישיר הלחץ יורד, והשיחה יכולה להיפסק ולהתחדש בטבעיות.' },
+  { text: 'שיחה עם בן זוג על חובות שהצטברו.', right: 'בהליכה משותפת בשכונה, באותו קצב', why: 'התנועה המשותפת מורידה עוררות, והמבט קדימה מקל לומר דברים קשים.' },
+  { text: 'בשורה לא טובה ללקוח שהפרויקט מתעכב.', right: 'בפינת השולחן, בזווית של 90 מעלות זה לזה', why: 'הזווית מאפשרת קשר עין כשרוצים, והמבט יכול לנוח בלי לברוח. זו לא חזית.' },
+  { text: 'שיחה עם שכנה על רעש בלילות.', right: 'על הספסל בחצר, זה לצד זה, מול הגינה', why: 'ישיבה צד לצד מול נוף משותף מעבירה את השיחה מעימות לתיאום.' },
+  { text: 'שיחה עם חבר שנפגע ממשהו שאמרת.', right: 'בהליכה בפארק, בקצב איטי', why: 'ההליכה נותנת לגוף משהו לעשות, והשתיקות לא מביכות.' },
+];

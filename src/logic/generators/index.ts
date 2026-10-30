@@ -17,6 +17,7 @@ import { concept, intensity, premise, regulation, signal, values } from './inner
 import { pipeline, query, trace } from './digital';
 import { effects, loop, stock } from './systems';
 import { fxBaseline, fxBroken, fxChannel, fxConditions, fxDefaults, fxFeed, fxFloors, fxLoop, fxMotion, fxResolution } from './fusion';
+import { fxArousal, fxBranch, fxCarrier, fxDose, fxForecast, fxModulation, fxProportion, fxRecovery, fxSeating, fxValue } from './fusion2';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
 export interface Draft {
@@ -157,5 +158,25 @@ function build(type: Variant['type'], dim: Variant['dim'], motion: Variant['moti
       return fxFeed(rng, level);
     case 'fx_resolution':
       return fxResolution(rng, level);
+    case 'fx_branch':
+      return fxBranch(rng, level);
+    case 'fx_value':
+      return fxValue(rng, level);
+    case 'fx_carrier':
+      return fxCarrier(rng, level);
+    case 'fx_forecast':
+      return fxForecast(rng, level);
+    case 'fx_arousal':
+      return fxArousal(rng, level);
+    case 'fx_dose':
+      return fxDose(rng, level);
+    case 'fx_proportion':
+      return fxProportion(rng, level);
+    case 'fx_modulation':
+      return fxModulation(rng, level);
+    case 'fx_recovery':
+      return fxRecovery(rng, level);
+    case 'fx_seating':
+      return fxSeating(rng, level);
   }
 }

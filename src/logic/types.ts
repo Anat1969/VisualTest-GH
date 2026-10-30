@@ -65,7 +65,17 @@ export type TestType =
   | 'fx_broken'
   | 'fx_loop'
   | 'fx_feed'
-  | 'fx_resolution';
+  | 'fx_resolution'
+  | 'fx_branch'
+  | 'fx_value'
+  | 'fx_carrier'
+  | 'fx_forecast'
+  | 'fx_arousal'
+  | 'fx_dose'
+  | 'fx_proportion'
+  | 'fx_modulation'
+  | 'fx_recovery'
+  | 'fx_seating';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -340,6 +350,16 @@ export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
   fx_loop: [['2D', 'static']],
   fx_feed: [['2D', 'static']],
   fx_resolution: [['2D', 'static']],
+  fx_branch: [['2D', 'static']],
+  fx_value: [['2D', 'static']],
+  fx_carrier: [['2D', 'static']],
+  fx_forecast: [['2D', 'static']],
+  fx_arousal: [['2D', 'static']],
+  fx_dose: [['2D', 'static']],
+  fx_proportion: [['2D', 'static']],
+  fx_modulation: [['2D', 'static']],
+  fx_recovery: [['2D', 'static']],
+  fx_seating: [['2D', 'static']],
 };
 
 /** Drills of the intelligences block (kept out of the standard skill map). */
@@ -357,6 +377,7 @@ export const INTEL_TYPES: TestType[] = [
   'loop', 'stock', 'effects',
   // fusion drills
   'fx_channel', 'fx_defaults', 'fx_baseline', 'fx_conditions', 'fx_motion', 'fx_floors', 'fx_broken', 'fx_loop', 'fx_feed', 'fx_resolution',
+  'fx_branch', 'fx_value', 'fx_carrier', 'fx_forecast', 'fx_arousal', 'fx_dose', 'fx_proportion', 'fx_modulation', 'fx_recovery', 'fx_seating',
 ];
 export const ALL_TYPES: TestType[] = [...TEST_TYPES, ...INTEL_TYPES];
 export const LEVELS: Level[] = [1, 2, 3];
@@ -415,6 +436,16 @@ export const TYPE_LABEL: Record<TestType, string> = {
   fx_loop: 'החלק המשתנה בלופ',
   fx_feed: 'קריאת הדירוג',
   fx_resolution: 'איפה הפירוט משתלם',
+  fx_branch: 'השינוי כענף',
+  fx_value: 'הערך שמתחת',
+  fx_carrier: 'מי נושא את הרגש',
+  fx_forecast: 'חזאות עצמית',
+  fx_arousal: 'תיעול העוררות',
+  fx_dose: 'מינון האמת',
+  fx_proportion: 'פרופורציה ביחידות חיות',
+  fx_modulation: 'צעד מודולציה',
+  fx_recovery: 'שלב ההתאוששות',
+  fx_seating: 'גאומטריה של שיחה',
 };
 
 export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';

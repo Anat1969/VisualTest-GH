@@ -70,6 +70,16 @@ const VARIANTS: Variant[] = [
   { type: 'fx_loop', dim: '2D', motion: 'static' },
   { type: 'fx_feed', dim: '2D', motion: 'static' },
   { type: 'fx_resolution', dim: '2D', motion: 'static' },
+  { type: 'fx_branch', dim: '2D', motion: 'static' },
+  { type: 'fx_value', dim: '2D', motion: 'static' },
+  { type: 'fx_carrier', dim: '2D', motion: 'static' },
+  { type: 'fx_forecast', dim: '2D', motion: 'static' },
+  { type: 'fx_arousal', dim: '2D', motion: 'static' },
+  { type: 'fx_dose', dim: '2D', motion: 'static' },
+  { type: 'fx_proportion', dim: '2D', motion: 'static' },
+  { type: 'fx_modulation', dim: '2D', motion: 'static' },
+  { type: 'fx_recovery', dim: '2D', motion: 'static' },
+  { type: 'fx_seating', dim: '2D', motion: 'static' },
 ];
 
 describe('cube nets', () => {
