@@ -16,6 +16,8 @@ const ANCHOR = 2; // the first arm's cubes are the anchor the learner follows
 const C = { stim: '#9DB0C4', anchor: '#3B86B0', ok: '#46A06A', bad: '#C9574B' };
 const T_LIFT = 800, T_TURN = 2300, T_LAND = 700;
 const TOTAL = T_LIFT + T_TURN + T_LAND;
+// a wrong option: the result holds for a second, then the figure turns back to the original drawing to try again
+const T_HOLD = 1000, T_BACK = 1000;
 
 function faceAxes(d: V3): [V3, V3] {
   if (d[0]) return [[0, 1, 0], [0, 0, 1]];
@@ -68,45 +70,58 @@ export function RotationSolve({ item, target }: { item: Item; target: number }) 
   const end = useMemo(() => endRotation(opt.rot, fit), [opt, fit]);
   const shift = useMemo(() => mulV(opt.rot, fit.t), [opt, fit]);
 
+  const END = fit.same ? TOTAL : TOTAL + T_HOLD + T_BACK;
+
   useEffect(() => {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     if (reduce) {
+      // no motion: show the result, then (for a wrong option) the original again after the same pause
       setMs(TOTAL);
-      return;
+      if (END === TOTAL) return;
+      const id = window.setTimeout(() => setMs(END), T_HOLD);
+      return () => window.clearTimeout(id);
     }
     const t0 = performance.now();
     const tick = (now: number) => {
       const t = now - t0;
-      setMs(Math.min(t, TOTAL));
-      if (t < TOTAL) raf.current = requestAnimationFrame(tick);
+      setMs(Math.min(t, END));
+      if (t < END) raf.current = requestAnimationFrame(tick);
     };
     setMs(0);
     raf.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf.current);
-  }, [target, run]);
+  }, [target, run, END]);
 
   const lift = easeInOut(clamp(ms / T_LIFT));
-  const turn = easeInOut(clamp((ms - T_LIFT) / T_TURN));
-  const land = clamp((ms - T_LIFT - T_TURN) / T_LAND);
-  const done = ms >= TOTAL;
+  const back = END > TOTAL ? clamp((ms - TOTAL - T_HOLD) / T_BACK) : 0;
+  const turn = easeInOut(clamp((ms - T_LIFT) / T_TURN)) * (1 - easeInOut(back));
+  const land = clamp((ms - T_LIFT - T_TURN) / T_LAND) * (1 - back);
+  const done = ms >= END;
+  const returned = done && END > TOTAL;
 
   // same frame as the static stimulus (Cubes3D), so the figure lifts straight out of the drawing
   const radius = Math.max(...start.cubes.map((c) => Math.hypot(...c)), ...opt.cubes.map((c) => Math.hypot(...c) + Math.hypot(...shift))) + 0.9;
   const r = Math.max(2.6, radius);
   const R = turnAt(start.rot, end, turn);
   // the figure floats up while it turns and settles as it lands (world z is up)
-  const hover = 0.45 * Math.sin(Math.PI * clamp(ms / (T_LIFT + T_TURN)));
+  const hover = 0.45 * Math.sin(Math.PI * clamp(ms / (T_LIFT + T_TURN))) + 0.3 * Math.sin(Math.PI * back);
   const off = add(scale(shift, turn), [0, 0, hover]);
 
   const anchorMix = lift * (1 - land);
-  const origColor = (i: number) => (land > 0.5 ? (fit.hits[i] ? C.ok : C.bad) : i < ANCHOR && anchorMix > 0.3 ? C.anchor : C.stim);
+  const origColor = (i: number) => (back > 0 ? C.stim : land > 0.5 ? (fit.hits[i] ? C.ok : C.bad) : i < ANCHOR && anchorMix > 0.3 ? C.anchor : C.stim);
   const polys = [
     ...(land > 0 ? faces(opt.cubes, opt.rot, [0, 0, 0], 0, 1, () => C.stim, true, 'g') : []),
     ...faces(start.cubes, R, off, 0, 1, origColor, false, 'o'),
   ].sort((a, b) => a.z - b.z);
   const miss = fit.hits.filter((h) => !h).length;
   const L = OPTION_LABELS[target];
-  const caption = !done
+  const caption = returned
+    ? `${L} לא מתאימה. נסי שוב מהמצב המקורי`
+    : back > 0
+      ? 'הצורה חוזרת למצב המקורי'
+      : ms >= TOTAL && !fit.same
+        ? `${miss} ${miss === 1 ? 'קובייה לא מוצאת' : 'קוביות לא מוצאות'} מקום ב-${L}, גם בסיבוב הקרוב ביותר`
+        : !done
     ? ms < T_LIFT
       ? 'הצורה מתרוממת'
       : `המקור מסתובב אל ${L}. עקבי אחרי הזרוע הכחולה`
@@ -131,7 +146,7 @@ export function RotationSolve({ item, target }: { item: Item; target: number }) 
           />
         ))}
       </svg>
-      <div className={`stage-status ${done ? (fit.same ? 'ok' : 'bad') : ''}`} aria-live="polite">
+      <div className={`stage-status ${ms >= TOTAL ? (fit.same ? 'ok' : 'bad') : ''}`} aria-live="polite">
         {caption}
       </div>
       {done && (
