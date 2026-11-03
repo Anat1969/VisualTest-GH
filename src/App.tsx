@@ -1,9 +1,10 @@
-import { Component, lazy, Suspense, useEffect, type ComponentType, type ReactNode } from 'react';
+import { Component, lazy, Suspense, useEffect, useRef, type ComponentType, type ReactNode } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { TopNav } from './components/TopNav';
 import { Empty, ErrorState, Loading } from './components/ui/States';
 import { syncNow } from './data/store';
 import Home from './pages/Home';
+import { isStale, onRouteChange } from './pwa';
 
 // Every page except Home loads on demand. Once the first screen is up and the browser is idle,
 // all of them are fetched in the background, so moving between pages never waits on the network.
@@ -95,7 +96,20 @@ function prefetchPages() {
 
 export default function App() {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  const first = useRef(true);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    // a newer deploy is out: load this page fresh instead of from the old code
+    if (isStale()) {
+      window.location.reload();
+      return;
+    }
+    onRouteChange();
+  }, [pathname]);
   useEffect(() => {
     void syncNow();
     prefetchPages();
