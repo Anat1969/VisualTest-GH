@@ -90,25 +90,25 @@ export function RotationSolve({ item, target }: { item: Item; target: number }) 
   const land = clamp((ms - T_LIFT - T_TURN) / T_LAND);
   const done = ms >= TOTAL;
 
-  const radius =
-    Math.max(...start.cubes.map((c) => Math.hypot(...c)), ...opt.cubes.map((c) => Math.hypot(...c))) + Math.hypot(...shift) + 1.2;
-  const floor = -radius * 0.8;
+  // same frame as the static stimulus (Cubes3D), so the figure lifts straight out of the drawing
+  const radius = Math.max(...start.cubes.map((c) => Math.hypot(...c)), ...opt.cubes.map((c) => Math.hypot(...c) + Math.hypot(...shift))) + 0.9;
+  const r = Math.max(2.6, radius);
   const R = turnAt(start.rot, end, turn);
-  const off = scale(shift, turn);
+  // the figure floats up while it turns and settles as it lands (world z is up)
+  const hover = 0.45 * Math.sin(Math.PI * clamp(ms / (T_LIFT + T_TURN)));
+  const off = add(scale(shift, turn), [0, 0, hover]);
 
-  const origColor = (i: number) => (land > 0.5 ? (fit.hits[i] ? C.ok : C.bad) : i < ANCHOR ? C.anchor : C.stim);
+  const anchorMix = lift * (1 - land);
+  const origColor = (i: number) => (land > 0.5 ? (fit.hits[i] ? C.ok : C.bad) : i < ANCHOR && anchorMix > 0.3 ? C.anchor : C.stim);
   const polys = [
-    ...(land > 0 ? faces(opt.cubes, opt.rot, [0, 0, 0], floor, 1, () => C.stim, true, 'g') : []),
-    ...faces(start.cubes, R, off, floor, 0.08 + 0.92 * lift, origColor, false, 'o'),
+    ...(land > 0 ? faces(opt.cubes, opt.rot, [0, 0, 0], 0, 1, () => C.stim, true, 'g') : []),
+    ...faces(start.cubes, R, off, 0, 1, origColor, false, 'o'),
   ].sort((a, b) => a.z - b.z);
-
-  const cam = CAM_SHAPES;
-  const pageCorners = ([[-1, -1], [1, -1], [1, 1], [-1, 1]] as const).map(([x, y]) => project(cam, [x * radius, y * radius, floor]));
   const miss = fit.hits.filter((h) => !h).length;
   const L = OPTION_LABELS[target];
   const caption = !done
     ? ms < T_LIFT
-      ? 'הצורה קמה מהדף'
+      ? 'הצורה מתרוממת'
       : `המקור מסתובב אל ${L}. עקבי אחרי הזרוע הכחולה`
     : fit.same
       ? `כל ${start.cubes.length} הקוביות יושבות על ${L}`
@@ -116,8 +116,7 @@ export function RotationSolve({ item, target }: { item: Item; target: number }) 
 
   return (
     <>
-      <svg viewBox={`${-radius * 1.25} ${-radius * 1.05} ${radius * 2.5} ${radius * 2.1}`} className="stim-svg solve3d-svg" role="img" aria-label={caption}>
-        <polygon points={pts(pageCorners)} fill="var(--surface-sunk)" stroke="var(--line)" strokeWidth={0.04} />
+      <svg viewBox={`${-r} ${-r} ${2 * r} ${2 * r}`} className="stim-svg" role="img" aria-label={caption}>
         {polys.map((p) => (
           <polygon
             key={p.key}

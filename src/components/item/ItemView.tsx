@@ -45,13 +45,15 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
   const chosen = answer !== null && answer >= 0 ? item.options[answer] : null;
   const correct = item.options[item.correctIndex];
   const isRight = chosen?.correct ?? false;
-  // lift-off items: a wrong answer is not revealed. The stage shows why it fails, and the learner tries again.
-  const solving = answered && showFeedback && answer! >= 0 && canSolve3D(item);
-  const tested = solving ? [answer!, ...tries] : [];
-  const current = tested[tested.length - 1];
-  const solved = !solving || item.options[current].correct;
-  const reveal = answered && showFeedback && solved;
-  const testing = item.options[current];
+  // with feedback on, a wrong answer (or a timeout) is never revealed: the learner tries again until finding it.
+  // Only the first answer is scored; later tries are for learning.
+  const retrying = answered && showFeedback;
+  const tested = retrying ? [...(answer! >= 0 ? [answer!] : []), ...tries] : [];
+  const current = tested[tested.length - 1] as number | undefined;
+  const solved = retrying && current !== undefined && item.options[current].correct;
+  const reveal = solved;
+  const solving = retrying && current !== undefined && canSolve3D(item);
+  const testing = current !== undefined ? item.options[current] : null;
   const stageRef = useRef<HTMLDivElement>(null);
   // each test plays in the stage: bring it into view (on a phone the answer would otherwise scroll it away)
   useEffect(() => {
@@ -75,18 +77,18 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
         {item.dynamic ? (
           <DynamicStage
             spec={item.dynamic}
-            reveal={answered && showFeedback}
+            reveal={reveal}
             replayToken={replay}
             onPaused={() => setReady(true)}
           />
         ) : solving ? (
-          <RotationSolve key={current} item={item} target={current} />
+          <RotationSolve key={current} item={item} target={current!} />
         ) : (
           <Visual spec={item.stimulus} label="פריט המקור" />
         )}
         {item.dynamic && (
           <div className="stage-status" aria-live="polite">
-            {!ready ? 'צפי בתנועה' : answered && showFeedback ? 'התנועה הושלמה' : 'נקודת השאלה'}
+            {!ready ? 'צפי בתנועה' : reveal ? 'התנועה הושלמה' : 'נקודת השאלה'}
           </div>
         )}
       </div>
@@ -107,11 +109,9 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
 
       <div className={`options ${item.dynamic && !ready ? 'waiting' : ''}`} role="group" aria-label="אפשרויות תשובה" aria-hidden={item.dynamic && !ready ? true : undefined}>
         {item.options.map((o, i) => {
-          const triedWrong = solving && tested.includes(i) && !o.correct;
-          const state = solving
-            ? triedWrong ? 'is-wrong' : solved ? (o.correct ? 'is-correct' : 'is-dim') : ''
-            : !answered || !showFeedback ? '' : o.correct ? 'is-correct' : i === answer ? 'is-wrong' : 'is-dim';
-          const canTry = solving && !solved && !tested.includes(i);
+          const triedWrong = retrying && tested.includes(i) && !o.correct;
+          const state = !retrying ? '' : triedWrong ? 'is-wrong' : solved ? (o.correct ? 'is-correct' : 'is-dim') : '';
+          const canTry = retrying && !solved && !tested.includes(i);
           return (
             <button
               key={i}
@@ -132,35 +132,27 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
         })}
       </div>
 
-      {solving && !solved && (
+      {retrying && !solved && (
         <section className="feedback bad" aria-live="polite">
-          <h3>{OPTION_LABELS[current]} לא מתאימה. נסי אפשרות אחרת</h3>
-          <p>
-            <span className="tag bad">{ERROR_LABEL[testing.errorType!]}</span> {testing.why}
-          </p>
-          <p className="small muted">{ERROR_HINT[testing.errorType!]}</p>
+          <h3>{testing ? `${OPTION_LABELS[current!]} לא מתאימה. נסי אפשרות אחרת` : 'הזמן נגמר. בחרי תשובה כדי ללמוד'}</h3>
+          {testing && (
+            <p>
+              <span className="tag bad">{ERROR_LABEL[testing.errorType!]}</span> {testing.why}
+            </p>
+          )}
+          {testing && <p className="small muted">{ERROR_HINT[testing.errorType!]}</p>}
+          <p className="small muted">בציון נרשמת טעות. הניסיונות הבאים לא משנים אותה.</p>
         </section>
       )}
 
       {reveal && (
         <section className={`feedback ${isRight ? 'ok' : 'bad'}`} aria-live="polite">
           <h3>
-            {answer === -1
-              ? 'הזמן נגמר'
-              : isRight
-                ? 'נכון'
-                : solving
-                  ? `נמצא בניסיון ה-${tested.length}: ${OPTION_LABELS[current]}`
-                  : `לא נכון. התשובה: ${OPTION_LABELS[item.correctIndex]}`}
+            {isRight ? 'נכון' : `נמצא בניסיון ה-${tested.length}: ${OPTION_LABELS[current!]}. בציון נרשמה טעות`}
           </h3>
-          {chosen && !isRight && !solving && (
-            <p>
-              <span className="tag bad">{ERROR_LABEL[chosen.errorType!]}</span> {chosen.why}
-            </p>
-          )}
           <p>{correct.why}</p>
           <p className="muted">{item.explanation}</p>
-          {chosen && !isRight && !solving && <p className="small muted">{ERROR_HINT[chosen.errorType!]}</p>}
+          
           {explainMode && (
             <details open>
               <summary>ניתוח כל האפשרויות</summary>
