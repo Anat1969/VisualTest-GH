@@ -4,6 +4,7 @@ import { ERROR_HINT, ERROR_LABEL } from '../../logic/types';
 import { NetFlat } from '../stimulus/Net';
 import { Visual } from '../stimulus/Visual';
 import { DynamicStage } from './DynamicStage';
+import { RotationSolve } from './RotationSolve';
 import './item.css';
 
 export const OPTION_LABELS = ['א', 'ב', 'ג', 'ד'];
@@ -117,6 +118,7 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
             </p>
           )}
           <p>{correct.why}</p>
+          {item.type === 'rotation' && item.motion === 'static' && item.stimulus.kind === 'cubes3d' && <RotationSolve key={item.id} item={item} answer={answer} />}
           <p className="muted">{item.explanation}</p>
           {chosen && !isRight && <p className="small muted">{ERROR_HINT[chosen.errorType!]}</p>}
           {explainMode && (
