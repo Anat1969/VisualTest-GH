@@ -30,15 +30,15 @@
   --fs-xl: 1.875rem;
   --fs-2xl: 2.5rem;
 
-  /* space: 4-based rhythm */
-  --s1: 4px;
-  --s2: 8px;
-  --s3: 12px;
-  --s4: 16px;
-  --s5: 24px;
-  --s6: 32px;
-  --s7: 48px;
-  --s8: 64px;
+  /* space: 4-based rhythm, in rem so it scales with the fluid root size (base.css) */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s5: 1.5rem;
+  --s6: 2rem;
+  --s7: 3rem;
+  --s8: 4rem;
 
   /* depth: light from top-right, consistent everywhere */
   --radius: 10px;
@@ -59,7 +59,8 @@
   --t-med: 240ms;
 
   --nav-h: 60px;
-  --maxw: 1120px;
+  /* the page widens with the screen, in proportion, between laptop and large monitor */
+  --maxw: min(1480px, max(1120px, 78vw));
   --z-nav: 30;
   --z-menu: 40;
 }

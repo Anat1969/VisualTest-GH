@@ -1,7 +1,7 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { Component, lazy, Suspense, useEffect, type ComponentType, type ReactNode } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { TopNav } from './components/TopNav';
-import { Empty, Loading } from './components/ui/States';
+import { Empty, ErrorState, Loading } from './components/ui/States';
 import { syncNow } from './data/store';
 import Home from './pages/Home';
 
@@ -18,15 +18,68 @@ const pages = {
   IntelligencePage: () => import('./pages/IntelligencePage'),
   FusionPage: () => import('./pages/FusionPage'),
 };
-const Setup = lazy(pages.Setup);
-const Run = lazy(pages.Run);
-const Summary = lazy(pages.Summary);
-const Diagnosis = lazy(pages.Diagnosis);
-const Progress = lazy(pages.Progress);
-const Library = lazy(pages.Library);
-const Intelligences = lazy(pages.Intelligences);
-const IntelligencePage = lazy(pages.IntelligencePage);
-const FusionPage = lazy(pages.FusionPage);
+/*
+ * A page file can fail to load: a flaky connection, or a new deploy while the app was open (the old file names
+ * are gone). Retry once, then reload the page a single time to pick up the new build. The flag stops a reload loop.
+ */
+const RELOAD_FLAG = 'merhav:chunk-reload';
+function sturdy<T extends ComponentType<never>>(load: () => Promise<{ default: T }>) {
+  return () =>
+    load()
+      .catch(() => new Promise((r) => setTimeout(r, 700)).then(load))
+      .then((m) => {
+        // a page loaded: a later failure may reload once again
+        try {
+          sessionStorage.removeItem(RELOAD_FLAG);
+        } catch {
+          /* storage blocked */
+        }
+        return m;
+      })
+      .catch((err) => {
+        let reloaded = false;
+        try {
+          reloaded = sessionStorage.getItem(RELOAD_FLAG) === '1';
+          if (!reloaded) sessionStorage.setItem(RELOAD_FLAG, '1');
+        } catch {
+          reloaded = true;
+        }
+        if (!reloaded) {
+          window.location.reload();
+          return new Promise<{ default: T }>(() => {});
+        }
+        throw err;
+      });
+}
+
+class PageBoundary extends Component<{ children: ReactNode; resetKey: string }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidUpdate(prev: { resetKey: string }) {
+    if (prev.resetKey !== this.props.resetKey && this.state.failed) this.setState({ failed: false });
+  }
+  render() {
+    if (this.state.failed)
+      return (
+        <main className="page">
+          <ErrorState title="הדף לא נטען" detail="ייתכן שהחיבור נקטע או שיצאה גרסה חדשה של האפליקציה." onRetry={() => window.location.reload()} />
+        </main>
+      );
+    return this.props.children;
+  }
+}
+
+const Setup = lazy(sturdy(pages.Setup));
+const Run = lazy(sturdy(pages.Run));
+const Summary = lazy(sturdy(pages.Summary));
+const Diagnosis = lazy(sturdy(pages.Diagnosis));
+const Progress = lazy(sturdy(pages.Progress));
+const Library = lazy(sturdy(pages.Library));
+const Intelligences = lazy(sturdy(pages.Intelligences));
+const IntelligencePage = lazy(sturdy(pages.IntelligencePage));
+const FusionPage = lazy(sturdy(pages.FusionPage));
 
 function prefetchPages() {
   const idle = (cb: () => void) =>
@@ -55,6 +108,7 @@ export default function App() {
       </a>
       <TopNav />
       <div id="main">
+        <PageBoundary resetKey={pathname}>
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -79,6 +133,7 @@ export default function App() {
             />
           </Routes>
         </Suspense>
+        </PageBoundary>
       </div>
     </>
   );

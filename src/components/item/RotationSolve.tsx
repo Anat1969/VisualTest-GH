@@ -56,9 +56,9 @@ function faces(cubes: V3[], R: M3, off: V3, floor: number, flat: number, color: 
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const clamp = (t: number) => Math.max(0, Math.min(1, t));
 
-export function RotationSolve({ item, answer }: { item: Item; answer: number }) {
+/** Plays inside the item's own stage: the original lifts off the page and turns onto option `target`. */
+export function RotationSolve({ item, target }: { item: Item; target: number }) {
   const start = item.stimulus as Cubes3DSpec;
-  const [target, setTarget] = useState(answer >= 0 ? answer : item.correctIndex);
   const [ms, setMs] = useState(0);
   const [run, setRun] = useState(0);
   const raf = useRef(0);
@@ -108,29 +108,15 @@ export function RotationSolve({ item, answer }: { item: Item; answer: number }) 
   const L = OPTION_LABELS[target];
   const caption = !done
     ? ms < T_LIFT
-      ? 'הצורה קמה מהדף.'
-      : `המקור מסתובב אל אפשרות ${L}. עקבי אחרי הזרוע הכחולה.`
+      ? 'הצורה קמה מהדף'
+      : `המקור מסתובב אל ${L}. עקבי אחרי הזרוע הכחולה`
     : fit.same
-      ? `כל ${start.cubes.length} הקוביות יושבות על אפשרות ${L}. זו אותה צורה.`
-      : `${miss} ${miss === 1 ? 'קובייה לא מוצאת' : 'קוביות לא מוצאות'} מקום באפשרות ${L}, גם בסיבוב הקרוב ביותר.`;
+      ? `כל ${start.cubes.length} הקוביות יושבות על ${L}`
+      : `${miss} ${miss === 1 ? 'קובייה לא מוצאת' : 'קוביות לא מוצאות'} מקום ב-${L}, גם בסיבוב הקרוב ביותר`;
 
   return (
-    <div className="solve3d">
-      <div className="solve3d-head">
-        <strong>הפתרון קם מהדף</strong>
-        <span className="small muted">בדיקה מול:</span>
-        <div className="solve3d-pick" role="group" aria-label="לבדוק מול אפשרות">
-          {item.options.map((_, i) => (
-            <button key={i} className="btn sm" aria-pressed={i === target} onClick={() => (i === target ? setRun((r) => r + 1) : setTarget(i))}>
-              {OPTION_LABELS[i]}
-            </button>
-          ))}
-        </div>
-        <button className="btn ghost sm" onClick={() => setRun((r) => r + 1)}>
-          שוב
-        </button>
-      </div>
-      <svg viewBox={`${-radius * 1.25} ${-radius * 1.05} ${radius * 2.5} ${radius * 2.1}`} className="solve3d-svg" role="img" aria-label={caption}>
+    <>
+      <svg viewBox={`${-radius * 1.25} ${-radius * 1.05} ${radius * 2.5} ${radius * 2.1}`} className="stim-svg solve3d-svg" role="img" aria-label={caption}>
         <polygon points={pts(pageCorners)} fill="var(--surface-sunk)" stroke="var(--line)" strokeWidth={0.04} />
         {polys.map((p) => (
           <polygon
@@ -146,9 +132,17 @@ export function RotationSolve({ item, answer }: { item: Item; answer: number }) 
           />
         ))}
       </svg>
-      <p className={`solve3d-cap ${done ? (fit.same ? 'ok' : 'bad') : ''}`} aria-live="polite">
+      <div className={`stage-status ${done ? (fit.same ? 'ok' : 'bad') : ''}`} aria-live="polite">
         {caption}
-      </p>
-    </div>
+      </div>
+      {done && (
+        <button className="btn ghost sm stage-replay" onClick={() => setRun((r) => r + 1)}>
+          שוב
+        </button>
+      )}
+    </>
   );
 }
+
+/** Items whose stage can play the lift-off solution. */
+export const canSolve3D = (item: Item) => item.type === 'rotation' && item.motion === 'static' && item.stimulus.kind === 'cubes3d';

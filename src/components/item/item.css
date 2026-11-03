@@ -16,11 +16,13 @@
   justify-content: center;
   padding: var(--s4);
   min-height: 240px;
+  scroll-margin-top: calc(var(--nav-h) + var(--s2));
 }
 .item-stage > svg {
-  width: min(100%, 360px);
+  /* the stimulus scales with the screen height, so the whole item fits on one screen */
+  width: min(100%, max(240px, 46dvh));
   height: auto;
-  max-height: 360px;
+  max-height: clamp(200px, 42dvh, 600px);
 }
 .item-stage.wide { padding: var(--s3); }
 .item-stage { gap: var(--s5); flex-wrap: wrap; }
@@ -114,7 +116,7 @@
 }
 .option-visual {
   width: 100%;
-  max-width: 170px;
+  max-width: clamp(84px, 15dvh, 240px);
 }
 .option.is-chosen { border-color: var(--ink); border-width: 2px; }
 .option.is-correct { border-color: var(--ok); border-width: 2px; background: var(--ok-soft); }
@@ -160,12 +162,30 @@
 .options.waiting { visibility: hidden; }
 .item-stage > svg.wide { width: min(100%, 640px); max-height: 340px; }
 
-/* animated 3D solution for rotation items: the original lifts off the page and turns onto an option */
-.solve3d { display: grid; gap: 8px; padding: 12px; background: var(--surface); border: 1px solid var(--line); }
-.solve3d-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.solve3d-head strong { margin-inline-end: auto; }
-.solve3d-pick { display: flex; gap: 6px; }
-.solve3d-svg { width: 100%; max-width: 520px; height: auto; aspect-ratio: 25 / 21; justify-self: center; }
-.solve3d-cap { margin: 0; font-weight: 600; min-height: 1.6em; }
-.solve3d-cap.ok { color: var(--ok); }
-.solve3d-cap.bad { color: var(--bad); }
+/* lift-off solution, played inside the item's own stage */
+.item-stage > svg.solve3d-svg { width: min(100%, max(260px, 54dvh)); max-height: clamp(220px, 46dvh, 640px); }
+.stage-status.ok { color: var(--ok); border-color: var(--ok); }
+.stage-status.bad { color: var(--bad); border-color: var(--bad); }
+.stage-replay { position: absolute; bottom: var(--s2); inset-inline-end: var(--s3); }
+
+/* wide screens in landscape: stage and options side by side, so the item fits one screen in proportion */
+@media (min-width: 1000px) and (min-aspect-ratio: 5 / 4) {
+  .item:not(.item--stack) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    column-gap: var(--s5);
+    row-gap: var(--s4);
+    align-items: start;
+  }
+  .item:not(.item--stack) > * { grid-column: 1 / -1; }
+  .item:not(.item--stack) > .item-stage { grid-column: 1; grid-row: 2; min-height: clamp(260px, 52dvh, 680px); }
+  .item:not(.item--stack) > .options { grid-column: 2; grid-row: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; }
+  .item:not(.item--stack) .option-visual { max-width: clamp(120px, 20dvh, 230px); }
+}
+/* short landscape phones: keep the stage readable without scrolling */
+@media (max-height: 520px) and (orientation: landscape) {
+  .item-stage { min-height: 0; padding: var(--s2); }
+  .item-stage > svg { max-height: 58dvh; }
+  .options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .option-visual { max-width: 26dvh; }
+}
