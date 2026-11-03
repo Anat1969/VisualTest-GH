@@ -159,3 +159,13 @@
 /* dynamic items: answers appear only at the question point */
 .options.waiting { visibility: hidden; }
 .item-stage > svg.wide { width: min(100%, 640px); max-height: 340px; }
+
+/* animated 3D solution for rotation items: the original lifts off the page and turns onto an option */
+.solve3d { display: grid; gap: 8px; padding: 12px; background: var(--surface); border: 1px solid var(--line); }
+.solve3d-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.solve3d-head strong { margin-inline-end: auto; }
+.solve3d-pick { display: flex; gap: 6px; }
+.solve3d-svg { width: 100%; max-width: 520px; height: auto; aspect-ratio: 25 / 21; justify-self: center; }
+.solve3d-cap { margin: 0; font-weight: 600; min-height: 1.6em; }
+.solve3d-cap.ok { color: var(--ok); }
+.solve3d-cap.bad { color: var(--bad); }
