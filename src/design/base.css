@@ -12,7 +12,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 16px;
+  /* one fluid root size: type and spacing scale together with the screen (15px on a phone, 19px on a large monitor) */
+  font-size: clamp(15px, 13px + 0.32vw, 19px);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
