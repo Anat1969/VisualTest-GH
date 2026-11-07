@@ -86,4 +86,39 @@ describe('fusion drills: answer keys', () => {
       expect(raw.w).not.toBe(best.w);
     });
   });
+
+  it('spacing: the keyed gap is where a step overruns the next one the most', () => {
+    run('fx_spacing', (item) => {
+      const rows = table(item);
+      const mins = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+      const slack = rows.slice(0, -1).map((r, i) => mins(rows[i + 1][1]) - (mins(r[1]) + parseInt(r[2], 10)));
+      const worst = slack.indexOf(Math.min(...slack));
+      expect(answer(item)).toBe(`בין "${rows[worst][0]}" ל"${rows[worst + 1][0]}"`);
+    });
+  });
+
+  it('weight: the keyed commitment has the most hours per year', () => {
+    run('fx_weight', (item) => {
+      const words = (item.stimulus as { words: string[] }).words;
+      const hours = (w: string) => {
+        const n = parseInt(w.split(': ')[1], 10);
+        if (w.includes('בשבוע')) return n * 52;
+        if (w.includes('כל יום עבודה')) return Math.round((n * 2 * 220) / 60);
+        if (w.includes('בחודש')) return n * 12;
+        if (w.includes('סופי שבוע')) return n * 16;
+        if (w.includes('כל ערב')) return Math.round((n * 365) / 60);
+        return Math.round((52 / parseInt(w.split('כל ')[1], 10)) * 8);
+      };
+      const best = words.reduce((a, b) => (hours(b) > hours(a) ? b : a));
+      expect(answer(item)).toBe(best);
+    });
+  });
+
+  it('motif: the keyed action is in all three stories, and no other is', () => {
+    run('fx_motif', (item) => {
+      const stories = (item.stimulus as { words: string[] }).words.map((w) => w.split(': ')[1].replace(/\.$/, '').split(', '));
+      const inAll = stories[0].filter((a) => stories.every((s) => s.includes(a)));
+      expect(inAll).toEqual([answer(item)]);
+    });
+  });
 });

@@ -80,6 +80,16 @@ const VARIANTS: Variant[] = [
   { type: 'fx_modulation', dim: '2D', motion: 'static' },
   { type: 'fx_recovery', dim: '2D', motion: 'static' },
   { type: 'fx_seating', dim: '2D', motion: 'static' },
+  { type: 'fx_spacing', dim: '2D', motion: 'static' },
+  { type: 'fx_under', dim: '2D', motion: 'static' },
+  { type: 'fx_selfsize', dim: '2D', motion: 'static' },
+  { type: 'fx_weight', dim: '2D', motion: 'static' },
+  { type: 'fx_phrase', dim: '2D', motion: 'static' },
+  { type: 'fx_rule', dim: '2D', motion: 'static' },
+  { type: 'fx_motif', dim: '2D', motion: 'static' },
+  { type: 'fx_motive', dim: '2D', motion: 'static' },
+  { type: 'fx_century', dim: '2D', motion: 'static' },
+  { type: 'fx_purpose', dim: '2D', motion: 'static' },
 ];
 
 describe('cube nets', () => {

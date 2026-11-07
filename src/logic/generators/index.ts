@@ -18,6 +18,7 @@ import { pipeline, query, trace } from './digital';
 import { effects, loop, stock } from './systems';
 import { fxBaseline, fxBroken, fxChannel, fxConditions, fxDefaults, fxFeed, fxFloors, fxLoop, fxMotion, fxResolution } from './fusion';
 import { fxArousal, fxBranch, fxCarrier, fxDose, fxForecast, fxModulation, fxProportion, fxRecovery, fxSeating, fxValue } from './fusion2';
+import { fxCentury, fxMotif, fxMotive, fxPhrase, fxPurpose, fxRule, fxSelfSize, fxSpacing, fxUnder, fxWeight } from './fusion3';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
 export interface Draft {
@@ -178,5 +179,25 @@ function build(type: Variant['type'], dim: Variant['dim'], motion: Variant['moti
       return fxRecovery(rng, level);
     case 'fx_seating':
       return fxSeating(rng, level);
+    case 'fx_spacing':
+      return fxSpacing(rng, level);
+    case 'fx_under':
+      return fxUnder(rng, level);
+    case 'fx_selfsize':
+      return fxSelfSize(rng, level);
+    case 'fx_weight':
+      return fxWeight(rng, level);
+    case 'fx_phrase':
+      return fxPhrase(rng, level);
+    case 'fx_rule':
+      return fxRule(rng, level);
+    case 'fx_motif':
+      return fxMotif(rng, level);
+    case 'fx_motive':
+      return fxMotive(rng, level);
+    case 'fx_century':
+      return fxCentury(rng, level);
+    case 'fx_purpose':
+      return fxPurpose(rng, level);
   }
 }
