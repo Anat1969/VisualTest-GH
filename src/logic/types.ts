@@ -75,7 +75,17 @@ export type TestType =
   | 'fx_proportion'
   | 'fx_modulation'
   | 'fx_recovery'
-  | 'fx_seating';
+  | 'fx_seating'
+  | 'fx_spacing'
+  | 'fx_under'
+  | 'fx_selfsize'
+  | 'fx_weight'
+  | 'fx_phrase'
+  | 'fx_rule'
+  | 'fx_motif'
+  | 'fx_motive'
+  | 'fx_century'
+  | 'fx_purpose';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -360,6 +370,16 @@ export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
   fx_modulation: [['2D', 'static']],
   fx_recovery: [['2D', 'static']],
   fx_seating: [['2D', 'static']],
+  fx_spacing: [['2D', 'static']],
+  fx_under: [['2D', 'static']],
+  fx_selfsize: [['2D', 'static']],
+  fx_weight: [['2D', 'static']],
+  fx_phrase: [['2D', 'static']],
+  fx_rule: [['2D', 'static']],
+  fx_motif: [['2D', 'static']],
+  fx_motive: [['2D', 'static']],
+  fx_century: [['2D', 'static']],
+  fx_purpose: [['2D', 'static']],
 };
 
 /** Drills of the intelligences block (kept out of the standard skill map). */
@@ -378,6 +398,7 @@ export const INTEL_TYPES: TestType[] = [
   // fusion drills
   'fx_channel', 'fx_defaults', 'fx_baseline', 'fx_conditions', 'fx_motion', 'fx_floors', 'fx_broken', 'fx_loop', 'fx_feed', 'fx_resolution',
   'fx_branch', 'fx_value', 'fx_carrier', 'fx_forecast', 'fx_arousal', 'fx_dose', 'fx_proportion', 'fx_modulation', 'fx_recovery', 'fx_seating',
+  'fx_spacing', 'fx_under', 'fx_selfsize', 'fx_weight', 'fx_phrase', 'fx_rule', 'fx_motif', 'fx_motive', 'fx_century', 'fx_purpose',
 ];
 export const ALL_TYPES: TestType[] = [...TEST_TYPES, ...INTEL_TYPES];
 export const LEVELS: Level[] = [1, 2, 3];
@@ -446,6 +467,16 @@ export const TYPE_LABEL: Record<TestType, string> = {
   fx_modulation: 'צעד מודולציה',
   fx_recovery: 'שלב ההתאוששות',
   fx_seating: 'גאומטריה של שיחה',
+  fx_spacing: 'המרווח שמונע גלגול',
+  fx_under: 'השאלה שמתחת',
+  fx_selfsize: 'כיול העצמי',
+  fx_weight: 'משקל ההתחייבות',
+  fx_phrase: 'העולם שבביטוי',
+  fx_rule: 'ארכיאולוגיה של כללים',
+  fx_motif: 'המוטיב החוזר',
+  fx_motive: 'הסימן שמבחין במניע',
+  fx_century: 'עין של מאה שנה',
+  fx_purpose: 'התכלית בפועל',
 };
 
 export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';
