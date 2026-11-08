@@ -2,7 +2,8 @@
 // straight view, and the chosen drawing is laid over it column by column. Pure math, no React.
 import type { Cubes3DSpec, Item, SceneSpec, V3 } from './types';
 
-export type PlanView = 'front' | 'right' | 'top';
+/** quarter: the dynamic item, where the building completes a quarter turn and is seen from the front */
+export type PlanView = 'front' | 'right' | 'top' | 'quarter';
 const U = 10;
 const r2 = (v: number) => Math.round(v * 2) / 2;
 
@@ -10,6 +11,8 @@ export const isTopPlan = (s: SceneSpec) => s.label === 'תוכנית עם גוב
 
 export function planView(item: Item): PlanView {
   if (isTopPlan(item.options[0].visual as SceneSpec)) return 'top';
+  // a dynamic item can fall back to a static one; the turn itself tells them apart
+  if (item.dynamic) return 'quarter';
   return item.prompt.includes('הימני') ? 'right' : 'front';
 }
 
@@ -37,10 +40,10 @@ export function readTop(s: SceneSpec): number[][] {
 }
 
 /** The building as the asked side sees it: world x is screen right, y is depth (or, from above, toward the back). */
-export const viewTurn = (view: PlanView): number => (view === 'right' ? -90 : 0);
+export const viewTurn = (view: PlanView): number => (view === 'right' ? -90 : view === 'quarter' ? 90 : 0);
 
 /** Cube position after the turn that brings the asked side to the front. */
-export const turned = (c: V3, view: PlanView): V3 => (view === 'right' ? [c[1], -c[0], c[2]] : c);
+export const turned = (c: V3, view: PlanView): V3 => (view === 'right' ? [c[1], -c[0], c[2]] : view === 'quarter' ? [-c[1], c[0], c[2]] : c);
 
 export interface PlanCell {
   /** world position of the column (elevation) or cell (plan), after the turn */

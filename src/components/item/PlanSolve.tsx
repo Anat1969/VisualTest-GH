@@ -20,7 +20,7 @@ const FRONT: V3 = [0, -1, 0.001];
 const TOP: V3 = [0, -0.02, 1];
 const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
-export const canSolvePlan = (item: Item) => item.type === 'plans' && item.motion === 'static' && item.stimulus.kind === 'cubes3d';
+export const canSolvePlan = (item: Item) => item.type === 'plans' && item.stimulus.kind === 'cubes3d';
 
 function faceAxes(d: V3): [V3, V3] {
   if (d[0]) return [[0, 1, 0], [0, 0, 1]];
@@ -64,7 +64,9 @@ export function PlanSolve({ item, target }: SolveProps) {
 
   const top = fit.view === 'top';
   const cam = camera(lerp3(START, top ? TOP : FRONT, turn));
-  const R = axisAngle([0, 0, 1], viewTurn(fit.view) * turn);
+  // the dynamic item stopped half way through its quarter turn: continue from there
+  const from = fit.view === 'quarter' ? 45 : 0;
+  const R = axisAngle([0, 0, 1], from + (viewTurn(fit.view) - from) * turn);
   const hover = 0.35 * Math.sin(Math.PI * phase(ms, 0, T_LIFT + T_TURN)) * (1 - back);
   // in the straight view the faces take the flat colour of the drawings
   const polys = buildingFaces(building.cubes, R, [0, 0, hover], cam, () => SOLVE.stim, turn);
@@ -141,6 +143,8 @@ export function PlanSolve({ item, target }: SolveProps) {
             ? 'המבט עובר לחזית, בגובה העיניים'
             : fit.view === 'right'
               ? 'הבניין מסתובב: הצד הימני פונה אלייך'
+              : fit.view === 'quarter'
+                ? 'הבניין משלים את רבע הסיבוב, והמבט עובר לחזית'
               : 'המבט עולה מעל הבניין. החזית למטה';
 
   return (

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { P2, Prim, SceneSpec, TextSpec, Tone, When } from '../../logic/types';
 
 const TONES: Record<string, string> = {
@@ -193,8 +194,8 @@ function PrimView({ prim, t, revealing, unit }: { prim: Prim; t: number; reveali
   }
 }
 
-/** Generic drawing. `t` follows the dynamic timeline (static scenes use the default). */
-export function Scene({ spec, t = 1, revealing = false, label }: { spec: SceneSpec; t?: number; revealing?: boolean; label?: string }) {
+/** Generic drawing. `t` follows the dynamic timeline (static scenes use the default). `children` draw on top, in the scene's units. */
+export function Scene({ spec, t = 1, revealing = false, label, children }: { spec: SceneSpec; t?: number; revealing?: boolean; label?: string; children?: ReactNode }) {
   const [x, y, w, h] = spec.box;
   const unit = Math.max(w, h) / 300; // stroke and text sizes scale with the drawing
   return (
@@ -202,6 +203,7 @@ export function Scene({ spec, t = 1, revealing = false, label }: { spec: SceneSp
       {spec.prims.map((p, i) => (
         <PrimView key={i} prim={p} t={t} revealing={revealing} unit={unit} />
       ))}
+      {children}
     </svg>
   );
 }

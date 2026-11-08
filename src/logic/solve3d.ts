@@ -1,6 +1,6 @@
 // Animated solution for 3D rotation items: find the cube rotation that brings the original as close as possible
 // to an option, and interpolate smoothly between orientations. Pure math, no React.
-import { CUBE_ROTATIONS, mulM, mulV } from './geometry';
+import { CUBE_ROTATIONS, axisAngle, mulM, mulV, roundM } from './geometry';
 import type { M3, V3 } from './types';
 
 const key = (p: V3) => p.map((v) => Math.round(v * 2)).join(',');
@@ -92,3 +92,33 @@ export const turnAt = (start: M3, end: M3, t: number): M3 => mFromQuat(slerp(qua
 
 /** Where the original ends: the option's own view rotation times the fitted cube rotation. */
 export const endRotation = (optionRot: M3, fit: Fit): M3 => mulM(optionRot, fit.m);
+
+/* ---------- dynamic 3D rotation: keep turning about the same axis until the figure meets the option ---------- */
+
+export interface Continue3D {
+  /** degrees, in the stated direction, until the figure meets the option (or comes closest) */
+  theta: number;
+  same: boolean;
+  right: boolean;
+  /** per cube at that turn: does it land on a cube of the option */
+  hits: boolean[];
+  /** world shift that lays the turned figure over the option */
+  t: V3;
+}
+
+export function fitContinue3D(cubes: V3[], startRot: M3, axis: V3, dir: number, x: number, optCubes: V3[], optRot: M3): Continue3D {
+  const target = optCubes.map((c) => mulV(optRot, c));
+  const tset = new Set(target.map(key));
+  const tc = centroid(target);
+  const tries = [90, 180, 270, 360].map((theta) => {
+    const R = roundM(mulM(axisAngle(axis, dir * theta), startRot));
+    const w = cubes.map((c) => mulV(R, c));
+    const cc = centroid(w);
+    const t = [0, 1, 2].map((i) => Math.round((tc[i] - cc[i]) * 2) / 2) as V3;
+    const hits = w.map((c) => tset.has(key([c[0] + t[0], c[1] + t[1], c[2] + t[2]])));
+    return { theta, hits, t, same: hits.every(Boolean) && cubes.length === optCubes.length };
+  });
+  const full = tries.filter((r) => r.same);
+  const pick = full.find((r) => r.theta === x) ?? full[0] ?? tries.reduce((a, b) => (b.hits.filter(Boolean).length > a.hits.filter(Boolean).length ? b : a));
+  return { theta: pick.theta, same: pick.same, right: pick.same && pick.theta === x, hits: pick.hits, t: pick.t };
+}

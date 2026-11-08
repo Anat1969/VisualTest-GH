@@ -17,7 +17,7 @@ const S = 100;
 const sc = (p: P2): [number, number] => [p[0] * S, p[1] * S];
 const PAPER = '#FBF9F4', FLAP_BACK = '#DCE6EF';
 
-export const canSolvePaper = (item: Item) => item.type === 'folding' && item.motion === 'static' && item.stimulus.kind === 'paperSteps';
+export const canSolvePaper = (item: Item) => item.type === 'folding' && item.stimulus.kind === 'paperSteps';
 
 export function PaperSolve({ item, target }: SolveProps) {
   const steps = item.stimulus as PaperStepsSpec;
