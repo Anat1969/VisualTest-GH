@@ -9,6 +9,7 @@ import { Poly2DSolve, canSolve2D } from './Poly2DSolve';
 import { RotationSolve, canSolve3D } from './RotationSolve';
 import { SectionSolve, canSolveSection } from './SectionSolve';
 import { SpeedSolve, canSolveSpeed } from './SpeedSolve';
+import { BeamSolve, PathSolve, TrainSolve, WaterSolve, canSolveBeam, canSolvePath, canSolveTrain, canSolveWater } from './TechSolve';
 import type { SolveProps } from './solveKit';
 
 /**
@@ -26,6 +27,10 @@ const SOLVERS: { can: (item: Item) => boolean; C: ComponentType<SolveProps> }[] 
   { can: canSolveSection, C: SectionSolve },
   { can: canSolveHidden, C: HiddenSolve },
   { can: canSolveSpeed, C: SpeedSolve },
+  { can: canSolveTrain, C: TrainSolve },
+  { can: canSolveBeam, C: BeamSolve },
+  { can: canSolvePath, C: PathSolve },
+  { can: canSolveWater, C: WaterSolve },
 ];
 
 export const solverFor = (item: Item): ComponentType<SolveProps> | null => SOLVERS.find((s) => s.can(item))?.C ?? null;

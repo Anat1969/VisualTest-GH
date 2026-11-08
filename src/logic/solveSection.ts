@@ -2,7 +2,7 @@
 // the solid's walls. The real section is used only to place and to judge; it is never drawn. Pure math, no React.
 import { add, scale } from './geometry';
 import { makeSolid, normalFrame, planeBasis, section, type SolidName } from './solids';
-import type { Item, P2, SceneSpec, V3 } from './types';
+import type { Item, P2, SceneSpec, SolveHint, V3 } from './types';
 
 export type EdgeState = 'on' | 'in' | 'out';
 
@@ -48,7 +48,7 @@ function inside(poly: P2[], q: P2): boolean {
 }
 
 export function fitSection(item: Item, target: number): SectionFit {
-  const hint = item.solve!;
+  const hint = item.solve as Extract<SolveHint, { kind: 'section' }>;
   const solid = makeSolid(hint.solid as SolidName);
   const real = section(solid, { n: hint.n, d: hint.d }).poly;
   const f = normalFrame(real);

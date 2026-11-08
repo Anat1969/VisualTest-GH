@@ -288,7 +288,16 @@ export interface Item {
   solve?: SolveHint;
 }
 
-export type SolveHint = { kind: 'section'; solid: string; n: V3; d: number };
+export type SolveHint =
+  | { kind: 'section'; solid: string; n: V3; d: number }
+  /** gear train: wheel geometry and the link between each pair (mesh, belt, cross, shaft) */
+  | { kind: 'train'; wheels: { c: P2; r: number; teeth: number; label: string }[]; links: string[]; turns: boolean }
+  /** balance beam: the hung loads, and what is asked: the weight at `pos`, or the position of weight `w` */
+  | { kind: 'beam'; loads: { pos: number; w: number }[]; mode: 'weight' | 'pos'; pos?: number; w?: number }
+  /** a body after release: its velocity direction at the start (null = at rest) and the force acting on it */
+  | { kind: 'path'; v0: P2 | null; force: 'down' | 'none' }
+  /** water in a glass tilted by `tilt` radians about `c` */
+  | { kind: 'water'; glass: P2[]; c: P2; tilt: number; fill: number };
 
 export interface Variant {
   type: TestType;
