@@ -49,7 +49,8 @@ export function paperFolding(rng: Rng, level: Level, motion: Motion): Draft {
   for (const d of rng.shuffle(shiftDirs)) {
     const idx = rng.int(0, correct.length - 1);
     const moved = correct.map((p, j) => (j === idx ? ([p[0] + d[0], p[1] + d[1]] as P2) : p));
-    if (moved.every((p) => p[0] > 0 && p[0] < 1 && p[1] > 0 && p[1] < 1))
+    // the moved hole must not land on another one: two holes would merge and the count would no longer be right
+    if (moved.every((p) => p[0] > 0 && p[0] < 1 && p[1] > 0 && p[1] < 1) && holesKey(moved).split(';').length === new Set(holesKey(moved).split(';')).size)
       candidates.push({
         visual: holes(moved),
         correct: false,

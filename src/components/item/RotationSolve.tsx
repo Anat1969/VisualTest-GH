@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
+import { SolveChrome, useSolveClock } from './solveKit';
 import { add, dot, mulV, scale } from '../../logic/geometry';
 import { endRotation, fitRotation, turnAt } from '../../logic/solve3d';
 import type { Cubes3DSpec, Item, M3, V3 } from '../../logic/types';
@@ -61,36 +62,13 @@ const clamp = (t: number) => Math.max(0, Math.min(1, t));
 /** Plays inside the item's own stage: the original lifts off the page and turns onto option `target`. */
 export function RotationSolve({ item, target }: { item: Item; target: number }) {
   const start = item.stimulus as Cubes3DSpec;
-  const [ms, setMs] = useState(0);
-  const [run, setRun] = useState(0);
-  const raf = useRef(0);
-
   const opt = item.options[target].visual as Cubes3DSpec;
   const fit = useMemo(() => fitRotation(start.cubes, opt.cubes), [start, opt]);
   const end = useMemo(() => endRotation(opt.rot, fit), [opt, fit]);
   const shift = useMemo(() => mulV(opt.rot, fit.t), [opt, fit]);
 
   const END = fit.same ? TOTAL : TOTAL + T_HOLD + T_BACK;
-
-  useEffect(() => {
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      // no motion: show the result, then (for a wrong option) the original again after the same pause
-      setMs(TOTAL);
-      if (END === TOTAL) return;
-      const id = window.setTimeout(() => setMs(END), T_HOLD);
-      return () => window.clearTimeout(id);
-    }
-    const t0 = performance.now();
-    const tick = (now: number) => {
-      const t = now - t0;
-      setMs(Math.min(t, END));
-      if (t < END) raf.current = requestAnimationFrame(tick);
-    };
-    setMs(0);
-    raf.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf.current);
-  }, [target, run, END]);
+  const { ms, replay } = useSolveClock(TOTAL, END, target);
 
   const lift = easeInOut(clamp(ms / T_LIFT));
   const back = END > TOTAL ? clamp((ms - TOTAL - T_HOLD) / T_BACK) : 0;
@@ -146,14 +124,7 @@ export function RotationSolve({ item, target }: { item: Item; target: number }) 
           />
         ))}
       </svg>
-      <div className={`stage-status ${ms >= TOTAL ? (fit.same ? 'ok' : 'bad') : ''}`} aria-live="polite">
-        {caption}
-      </div>
-      {done && (
-        <button className="btn ghost sm stage-replay" onClick={() => setRun((r) => r + 1)}>
-          שוב
-        </button>
-      )}
+      <SolveChrome caption={caption} verdict={ms >= TOTAL ? (fit.same ? 'ok' : 'bad') : null} done={done} onReplay={replay} />
     </>
   );
 }
