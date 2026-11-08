@@ -1,6 +1,6 @@
 // Technical understanding: gear trains, balance beams, intuitive physics.
 import type { Rng } from '../rng';
-import type { Level, Motion, Option, P2, Prim, SceneSpec, TextSpec } from '../types';
+import type { Level, Motion, Option, P2, Prim, SceneSpec, SolveHint, TextSpec } from '../types';
 import type { Draft } from './index';
 
 const text = (t: string, sub?: string): TextSpec => ({ kind: 'text', text: t, sub });
@@ -179,6 +179,7 @@ export function mechanics(rng: Rng, level: Level, motion: Motion): Draft {
       stimulus: stim,
       dynamic: motion === 'dynamic' ? { kind: 'scene', scene: dyn, durationMs: 2200, revealMs: 2200 } : undefined,
       options,
+      solve: { kind: 'train', wheels, links, turns: level === 3 },
       explanation:
         'כיוון: כל מגע ישיר בין גלגלי שיניים הופך את הכיוון, רצועה ישרה שומרת עליו, רצועה מוצלבת הופכת, וציר משותף שומר. מהירות: יחס השיניים (או הקטרים) בין המניע למונע; גלגל קטן מסתובב מהר יותר.',
     };
@@ -260,6 +261,7 @@ export function statics(rng: Rng, level: Level): Draft {
           { visual: text(`${w} ק״ג`), correct: true, why: `המומנט משמאל הוא ${m}. ${m} חלקי מרחק ${pos} = ${w}.` },
           ...picked.map((c) => ({ visual: text(`${c.v} ק״ג`), correct: false, errorType: c.errorType, why: c.why }) as Option),
         ],
+        solve: { kind: 'beam', loads: L, mode: 'weight', pos },
         explanation: 'קורה מאוזנת כשסכום (משקל × מרחק) משמאל לציר שווה לסכום מימין. חשבי את הצד הידוע, וחלקי במרחק של המקום המסומן.',
       };
     }
@@ -286,6 +288,7 @@ export function statics(rng: Rng, level: Level): Draft {
         { visual: text(`במרחק ${pos}`), correct: true, why: `המומנט החסר הוא ${m}, ו-${w} × ${pos} = ${m}.` },
         ...picked.map((c) => ({ visual: text(`במרחק ${c.v}`), correct: false, errorType: c.errorType, why: c.why }) as Option),
       ],
+      solve: { kind: 'beam', loads: L, mode: 'pos', w },
       explanation: 'חשבי את המומנט נטו: משקל × מרחק לכל צד. המשקל החדש צריך לספק בדיוק את ההפרש: מרחק = הפרש המומנטים ÷ המשקל.',
     };
   }
@@ -341,7 +344,7 @@ function waterPoly(glass: P2[], surfaceAngle: number, fill: number): P2[] {
   return clip((lo + hi) / 2);
 }
 
-function waterItem(rng: Rng, level: Level): { stim: SceneSpec; options: Option[]; prompt: string; explanation: string } {
+function waterItem(rng: Rng, level: Level): { stim: SceneSpec; options: Option[]; prompt: string; explanation: string; solve: SolveHint } {
   const tilt = ((rng.pick([1, -1]) * rng.int(level === 3 ? 30 : 18, level === 3 ? 45 : 32)) * Math.PI) / 180;
   const c: P2 = [60, 70];
   const glass = ([[-18, -32], [18, -32], [18, 32], [-18, 32]] as P2[]).map(([x, y]) => rot([c[0] + x, c[1] + y], c, tilt));
@@ -372,6 +375,7 @@ function waterItem(rng: Rng, level: Level): { stim: SceneSpec; options: Option[]
       { visual: draw(tilt / 2), correct: false, errorType: 'transformation', why: 'פני המים נוטים חלקית. הם אופקיים לגמרי.' },
       { visual: draw(0, 0.75), correct: false, errorType: 'encoding', why: 'פני המים אופקיים, אבל כמות המים גדלה. הנפח לא משתנה בהטיה.' },
     ],
+    solve: { kind: 'water', glass: ([[-18, -32], [18, -32], [18, 32], [-18, 32]] as P2[]).map(([x, y]) => [c[0] + x, c[1] + y] as P2), c, tilt, fill },
     explanation: 'נוזל במנוחה מסדר את פניו בניצב לכוח הכובד: תמיד אופקי, בלי קשר לצורת הכלי או לזווית שלו. הנפח נשמר.',
   };
 }
@@ -412,6 +416,7 @@ function tubeItem(rng: Rng, motion: Motion) {
       { visual: draw(end(radial)), correct: false, errorType: 'transformation', why: 'הכדור לא נזרק החוצה מהמרכז. הוא ממשיך בכיוון שבו נע ברגע היציאה.' },
       { visual: draw(end(skew)), correct: false, errorType: 'encoding', why: 'קו ישר נכון, אבל בזווית שגויה: הכיוון הוא המשיק לצינור בנקודת היציאה.' },
     ] as Option[],
+    solve: { kind: 'path', v0: tangent, force: 'none' } as SolveHint,
     explanation: 'חוק ההתמדה: גוף ממשיך בקו ישר כל עוד אין כוח שפועל עליו. הדופן היא שכופפה את המסלול; ביציאה המסלול ממשיך במשיק.',
   };
 }
@@ -450,6 +455,7 @@ function cliffItem(rng: Rng, motion: Motion) {
       { visual: draw(straight), correct: false, errorType: 'encoding', why: 'קו ישר אלכסוני מתעלם מהתאוצה: הנפילה מהירה יותר ככל שהזמן עובר, ולכן המסלול מתעקל.' },
       { visual: draw(back), correct: false, errorType: 'transformation', why: 'הכדור לא חוזר לכיוון השולחן. אין כוח אופקי שמושך אותו אחורה.' },
     ] as Option[],
+    solve: { kind: 'path', v0: [1, 0], force: 'down' } as SolveHint,
     explanation: 'שתי תנועות בלתי תלויות: אופקית במהירות קבועה, ואנכית מואצת בגלל הכובד. השילוב יוצר פרבולה שמתחילה אופקית ומתכופפת למטה.',
   };
 }
@@ -508,6 +514,7 @@ function pendulumItem(rng: Rng, motion: Motion) {
         : undefined,
     prompt: `החוט של המטוטלת נחתך ${where}. באיזה מסלול ינוע הגוף?`,
     options,
+    solve: { kind: 'path', v0: atBottom ? [-side, 0] : null, force: 'down' } as SolveHint,
     explanation: 'ברגע החיתוך הגוף שומר על המהירות שהייתה לו באותו רגע, ומשם רק הכובד פועל. בקיצון המהירות אפס, ובנקודה הנמוכה היא אופקית ומרבית.',
   };
 }
@@ -522,6 +529,7 @@ export function physics(rng: Rng, level: Level, motion: Motion): Draft {
     stimulus: it.stim,
     dynamic: it.dyn ? { kind: 'scene', scene: it.dyn, durationMs: 1400, revealMs: 1100 } : undefined,
     options: it.options,
+    solve: it.solve,
     explanation: it.explanation,
   };
 }
