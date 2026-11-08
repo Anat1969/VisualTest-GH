@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
+import { SolveChrome, useSolveClock } from './solveKit';
 import { camera, type Camera } from '../../logic/camera';
 import { foldNet } from '../../logic/cubeNet';
 import { add, dot, mulV, scale, sub } from '../../logic/geometry';
@@ -46,26 +47,7 @@ export function NetSolve({ item, target }: { item: Item; target: number }) {
   }, [net, visual, oriented]);
 
   const END = fit.same ? TOTAL : TOTAL + T_HOLD + T_BACK;
-  const [ms, setMs] = useState(0);
-  const [run, setRun] = useState(0);
-  const raf = useRef(0);
-  useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      setMs(TOTAL);
-      if (END === TOTAL) return;
-      const id = window.setTimeout(() => setMs(END), T_HOLD);
-      return () => window.clearTimeout(id);
-    }
-    const t0 = performance.now();
-    const tick = (now: number) => {
-      const t = now - t0;
-      setMs(Math.min(t, END));
-      if (t < END) raf.current = requestAnimationFrame(tick);
-    };
-    setMs(0);
-    raf.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf.current);
-  }, [target, run, END]);
+  const { ms, replay } = useSolveClock(TOTAL, END, target);
 
   // closed-cube centre, the pivot for the turn
   const center = useMemo(() => {
@@ -183,14 +165,7 @@ export function NetSolve({ item, target }: { item: Item; target: number }) {
           );
         })}
       </svg>
-      <div className={`stage-status ${ms >= TOTAL ? (fit.same ? 'ok' : 'bad') : ''}`} aria-live="polite">
-        {caption}
-      </div>
-      {done && (
-        <button className="btn ghost sm stage-replay" onClick={() => setRun((r) => r + 1)}>
-          שוב
-        </button>
-      )}
+      <SolveChrome caption={caption} verdict={ms >= TOTAL ? (fit.same ? 'ok' : 'bad') : null} done={done} onReplay={replay} />
     </>
   );
 }

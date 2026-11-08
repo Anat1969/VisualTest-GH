@@ -4,8 +4,7 @@ import { ERROR_HINT, ERROR_LABEL } from '../../logic/types';
 import { NetFlat } from '../stimulus/Net';
 import { Visual } from '../stimulus/Visual';
 import { DynamicStage } from './DynamicStage';
-import { NetSolve, canSolveNet } from './NetSolve';
-import { RotationSolve, canSolve3D } from './RotationSolve';
+import { solverFor } from './solvers';
 import './item.css';
 
 export const OPTION_LABELS = ['א', 'ב', 'ג', 'ד'];
@@ -53,7 +52,8 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
   const current = tested[tested.length - 1] as number | undefined;
   const solved = retrying && current !== undefined && item.options[current].correct;
   const reveal = solved;
-  const solving = retrying && current !== undefined && (canSolve3D(item) || canSolveNet(item));
+  const Solver = solverFor(item);
+  const solving = retrying && current !== undefined && Solver !== null;
   const testing = current !== undefined ? item.options[current] : null;
   const stageRef = useRef<HTMLDivElement>(null);
   // each test plays in the stage: bring it into view (on a phone the answer would otherwise scroll it away)
@@ -83,7 +83,7 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
             onPaused={() => setReady(true)}
           />
         ) : solving ? (
-          canSolveNet(item) ? <NetSolve key={current} item={item} target={current!} /> : <RotationSolve key={current} item={item} target={current!} />
+          Solver && <Solver key={current} item={item} target={current!} />
         ) : (
           <Visual spec={item.stimulus} label="פריט המקור" />
         )}

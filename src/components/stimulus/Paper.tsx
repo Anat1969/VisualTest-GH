@@ -7,7 +7,7 @@ const S = 100;
 const sc = (p: P2): [number, number] => [p[0] * S, p[1] * S];
 const VB = '-14 -14 128 128';
 
-function FoldLine({ fold, region }: { fold: PaperFold; region: P2[] }) {
+export function FoldLine({ fold, region }: { fold: PaperFold; region: P2[] }) {
   // line segment clipped to the region's extent along the fold direction
   const t: P2 = [-fold.n[1], fold.n[0]];
   const proj = region.map((p) => dot2(t, p));
@@ -41,7 +41,7 @@ function FoldArrow({ flap, fold }: { flap: P2[]; fold: PaperFold }) {
   );
 }
 
-const Ghost = () => (
+export const Ghost = () => (
   <polygon points={pts(SQUARE.map(sc))} fill="none" stroke="var(--line-strong)" strokeWidth={0.8} strokeDasharray="2 3" />
 );
 
