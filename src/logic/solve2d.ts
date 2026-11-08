@@ -178,3 +178,41 @@ export function readPattern(scene: SceneSpec): boolean[] {
 
 /** Indices of the cells where the option differs from the sample. */
 export const patternDiff = (sample: boolean[], option: boolean[]) => sample.flatMap((v, i) => (v !== option[i] ? [i] : []));
+
+/* ---------------- dynamic 2D rotation: keep turning the same way until the shape meets the option ---------------- */
+
+export interface ContinueFit {
+  /** how far, in the stated direction, the shape must keep turning to meet the option (degrees, 1..360) */
+  delta: number;
+  /** what the question asks: continue by x in direction dir */
+  x: number;
+  dir: 1 | -1;
+  /** some continuation in that direction meets the option exactly */
+  same: boolean;
+  /** ...and it is exactly the asked continuation */
+  right: boolean;
+  /** for an option no turn can meet: per cell, does it land at the closest turn */
+  hits: boolean[];
+  shift: P2;
+}
+
+const mod360 = (v: number) => ((Math.round(v) % 360) + 360) % 360;
+
+export function fitContinue2D(start: Poly2DSpec, opt: Poly2DSpec, to: number, reveal: number): ContinueFit {
+  const dir = (Math.sign(reveal - to) || 1) as 1 | -1;
+  const x = Math.round(Math.abs(reveal - to));
+  const target = localCells(opt);
+  const own = localCells({ ...start, mirror: false });
+  const turnTo = (angle: number) => mod360(dir * (angle - start.angle)) || 360;
+  const full: number[] = [];
+  for (const k of [0, 1, 2, 3]) {
+    const hits = own.map((p) => target.some((q) => near(rot(p, 90 * k), q)));
+    if (hits.every(Boolean) && own.length === target.length) full.push(turnTo(opt.angle + 90 * k));
+  }
+  if (full.length) {
+    const delta = full.includes(mod360(x) || 360) ? mod360(x) || 360 : Math.min(...full);
+    return { delta, x, dir, same: true, right: delta === (mod360(x) || 360), hits: own.map(() => true), shift: [0, 0] };
+  }
+  const fit = fitPoly(start, opt);
+  return { delta: turnTo(fit.angle), x, dir, same: false, right: false, hits: fit.hits, shift: fit.shift };
+}

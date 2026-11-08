@@ -105,6 +105,7 @@ export function sections(rng: Rng, level: Level, motion: Motion): Draft {
       stimulus: { ...stim, prims: prims.map((p) => ({ ...p, anim: undefined })) },
       dynamic: motion === 'dynamic' ? { kind: 'scene', scene: stim, durationMs: 1700, revealMs: 500 } : undefined,
       options: [{ visual: scene(main.poly), correct: true, why: `החתך הוא ${name}.` }, ...distractors.slice(0, 3)],
+      solve: { kind: 'section', solid: s.name, n: main.pl.n, d: main.pl.d },
       explanation: `ספרי כמה פאות המישור חוצה: זה מספר הצלעות של החתך. בגוף עגול, מישור ניצב לציר נותן עיגול, מישור נטוי נותן אליפסה, ומישור שחוצה גם את הבסיס מוסיף צלע ישרה. כאן החתך הוא ${name}.`,
     };
   }

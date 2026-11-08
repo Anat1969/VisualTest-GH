@@ -28,6 +28,7 @@ export interface Draft {
   dynamic?: DynamicSpec;
   options: Option[];
   explanation: string;
+  solve?: Item['solve'];
 }
 
 export function generateItem(variant: Variant, level: Level, seed: number): Item {
@@ -48,6 +49,7 @@ export function generateItem(variant: Variant, level: Level, seed: number): Item
     options,
     correctIndex: options.findIndex((o) => o.correct),
     explanation: draft.explanation,
+    ...(draft.solve ? { solve: draft.solve } : {}),
   };
 }
 

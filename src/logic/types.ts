@@ -284,7 +284,11 @@ export interface Item {
   options: Option[];
   correctIndex: number;
   explanation: string;
+  /** geometry the animated solution needs and the drawings do not carry (not part of the item id) */
+  solve?: SolveHint;
 }
+
+export type SolveHint = { kind: 'section'; solid: string; n: V3; d: number };
 
 export interface Variant {
   type: TestType;

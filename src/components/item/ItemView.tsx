@@ -69,25 +69,25 @@ export function ItemView({ item, answer, showFeedback, explainMode, allowReplay,
       <p className="item-prompt">{item.prompt}</p>
 
       <div ref={stageRef} className={`board item-stage ${wide ? 'wide' : ''}`}>
-        {item.dynamic?.kind === 'netFold' && (
+        {item.dynamic?.kind === 'netFold' && !solving && (
           <figure className="stage-ref">
             <NetFlat spec={item.dynamic.net} />
             <figcaption>הפריסה</figcaption>
           </figure>
         )}
-        {item.dynamic ? (
+        {solving ? (
+          Solver && <Solver key={current} item={item} target={current!} />
+        ) : item.dynamic ? (
           <DynamicStage
             spec={item.dynamic}
             reveal={reveal}
             replayToken={replay}
             onPaused={() => setReady(true)}
           />
-        ) : solving ? (
-          Solver && <Solver key={current} item={item} target={current!} />
         ) : (
           <Visual spec={item.stimulus} label="פריט המקור" />
         )}
-        {item.dynamic && (
+        {item.dynamic && !solving && (
           <div className="stage-status" aria-live="polite">
             {!ready ? 'צפי בתנועה' : reveal ? 'התנועה הושלמה' : 'נקודת השאלה'}
           </div>

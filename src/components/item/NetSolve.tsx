@@ -29,7 +29,7 @@ const clamp = (t: number) => Math.max(0, Math.min(1, t));
 const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 const SLOT_NORMAL: Record<Slot, V3> = { top: [0, 0, 1], front: [0, -1, 0], right: [1, 0, 0] };
 
-export const canSolveNet = (item: Item) => item.type === 'folding' && item.motion === 'static' && item.stimulus.kind === 'net';
+export const canSolveNet = (item: Item) => item.type === 'folding' && item.stimulus.kind === 'net';
 
 export function NetSolve({ item, target }: { item: Item; target: number }) {
   const net = item.stimulus as NetSpec;

@@ -28,7 +28,7 @@ function faceAxes(d: V3): [V3, V3] {
 
 interface Poly { key: string; points: string; fill: string; z: number; ghost: boolean }
 
-function faces(cubes: V3[], R: M3, off: V3, floor: number, flat: number, color: (i: number) => string, ghost: boolean, tag: string): Poly[] {
+export function faces(cubes: V3[], R: M3, off: V3, floor: number, flat: number, color: (i: number) => string, ghost: boolean, tag: string): Poly[] {
   const cam = CAM_SHAPES;
   const set = new Set(cubes.map((c) => c.map((v) => Math.round(v * 2)).join(',')));
   const has = (p: V3) => set.has(p.map((v) => Math.round(v * 2)).join(','));

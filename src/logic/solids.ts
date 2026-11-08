@@ -182,6 +182,22 @@ function simplify(poly: P2[]): P2[] {
   return p;
 }
 
+/** The frame normalizeShape uses: centre, principal-axis angle and radius. */
+export function normalFrame(poly: P2[]): { cx: number; cy: number; ang: number; m: number } {
+  const p = simplify(poly);
+  const cx = p.reduce((s, q) => s + q[0], 0) / p.length;
+  const cy = p.reduce((s, q) => s + q[1], 0) / p.length;
+  let sxx = 0, syy = 0, sxy = 0;
+  for (const [x, y] of p) {
+    sxx += (x - cx) * (x - cx);
+    syy += (y - cy) * (y - cy);
+    sxy += (x - cx) * (y - cy);
+  }
+  const ang = 0.5 * Math.atan2(2 * sxy, sxx - syy);
+  const m = Math.max(...p.map(([x, y]) => Math.hypot(x - cx, y - cy)));
+  return { cx, cy, ang, m };
+}
+
 /** Centre, scale to unit radius and rotate the principal axis to horizontal. */
 export function normalizeShape(poly: P2[]): P2[] {
   const p = simplify(poly);

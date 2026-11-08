@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { generateItem } from './generators';
-import { fitHidden, fitPaper, fitPoly, foldPoint, gridOf, patternDiff, readPattern, readSegs, rot, localCells } from './solve2d';
+import { fitContinue2D, fitHidden, fitPaper, fitPoly, foldPoint, gridOf, patternDiff, readPattern, readSegs, rot, localCells } from './solve2d';
 import { fitPlan } from './solvePlan';
-import type { Level, PaperHolesSpec, PaperStepsSpec, Poly2DSpec, SceneSpec, Variant } from './types';
+import { fitContinue3D } from './solve3d';
+import { fitSection } from './solveSection';
+import type { Cubes3DSpec, Level, PaperHolesSpec, PaperStepsSpec, Poly2DSpec, SceneSpec, Variant } from './types';
 
 const LEVELS: Level[] = [1, 2, 3];
 const each = (v: Variant, n: number, fn: (item: ReturnType<typeof generateItem>) => void) => {
@@ -72,5 +74,52 @@ describe('plans solution', () => {
   it('only the correct drawing matches the building in every column', () =>
     each({ type: 'plans', dim: '3D', motion: 'static' }, 40, (item) =>
       item.options.forEach((_, i) => expect(fitPlan(item, i).same).toBe(i === item.correctIndex)),
+    ));
+});
+
+describe('sections solution', () => {
+  it('only the correct shape lies on the solid walls all round', () =>
+    each({ type: 'sections', dim: '3D', motion: 'static' }, 40, (item) =>
+      item.options.forEach((_, i) => {
+        const fit = fitSection(item, i);
+        expect(fit.same).toBe(i === item.correctIndex);
+        const on = fit.pieces.filter((p) => p.state === 'on').length / fit.pieces.length;
+        if (i === item.correctIndex) expect(on).toBe(1);
+        else expect(on).toBeLessThan(1);
+      }),
+    ));
+});
+
+describe('dynamic rotation solution', () => {
+  it('2D: only the correct option is met by exactly the asked continuation', () =>
+    each({ type: 'rotation', dim: '2D', motion: 'dynamic' }, 40, (item) => {
+      const d = item.dynamic as Extract<NonNullable<typeof item.dynamic>, { kind: 'rotate2d' }>;
+      item.options.forEach((o, i) => expect(fitContinue2D(item.stimulus as Poly2DSpec, o.visual as Poly2DSpec, d.to, d.reveal).right).toBe(i === item.correctIndex));
+    }));
+
+  it('3D: only the correct option is met by exactly the asked continuation', () =>
+    each({ type: 'rotation', dim: '3D', motion: 'dynamic' }, 40, (item) => {
+      const d = item.dynamic as Extract<NonNullable<typeof item.dynamic>, { kind: 'rotate3d' }>;
+      const s = item.stimulus as Cubes3DSpec;
+      item.options.forEach((o, i) => {
+        const v = o.visual as Cubes3DSpec;
+        const f = fitContinue3D(s.cubes, s.rot, d.axis, Math.sign(d.reveal - d.to), Math.abs(d.reveal - d.to), v.cubes, v.rot);
+        expect(f.right).toBe(i === item.correctIndex);
+      });
+    }));
+});
+
+describe('dynamic plans, paper, nets and sections', () => {
+  it('plans: only the correct front after the quarter turn matches', () =>
+    each({ type: 'plans', dim: '3D', motion: 'dynamic' }, 40, (item) =>
+      item.options.forEach((_, i) => expect(fitPlan(item, i).same).toBe(i === item.correctIndex)),
+    ));
+  it('paper: the dynamic sheet folds back the same way', () =>
+    each({ type: 'folding', dim: '2D', motion: 'dynamic' }, 20, (item) =>
+      item.options.forEach((o, i) => expect(fitPaper(item.stimulus as PaperStepsSpec, (o.visual as PaperHolesSpec).holes).same).toBe(i === item.correctIndex)),
+    ));
+  it('sections: the dynamic cut is judged the same way', () =>
+    each({ type: 'sections', dim: '3D', motion: 'dynamic' }, 20, (item) =>
+      item.options.forEach((_, i) => expect(fitSection(item, i).same).toBe(i === item.correctIndex)),
     ));
 });
