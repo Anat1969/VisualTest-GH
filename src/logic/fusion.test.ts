@@ -121,4 +121,28 @@ describe('fusion drills: answer keys', () => {
       expect(inAll).toEqual([answer(item)]);
     });
   });
+
+  it('tempo: the keyed question is the one clearly slower than all others', () => {
+    run('fx_tempo', (item) => {
+      const rows = table(item);
+      const t = rows.map((r) => parseFloat(r[1]));
+      const max = Math.max(...t);
+      const keyed = rows.find((r) => r[0] === answer(item))!;
+      expect(parseFloat(keyed[1])).toBe(max);
+      expect(max - Math.max(...t.filter((x) => x !== max))).toBeGreaterThanOrEqual(0.4);
+    });
+  });
+
+  it('keystone: every breakdown is a week the keyed member was absent, and only those', () => {
+    run('fx_keystone', (item) => {
+      for (const r of table(item)) expect(r[1] === answer(item)).toBe(r[2] === 'הכול השתבש');
+    });
+  });
+
+  it('assumption: the keyed assumption is the one never checked', () => {
+    run('fx_assumption', (item) => {
+      const never = table(item).filter((r) => r[2] === 'אף פעם');
+      expect(never.map((r) => r[0])).toEqual([answer(item)]);
+    });
+  });
 });

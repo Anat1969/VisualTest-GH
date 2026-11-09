@@ -85,7 +85,17 @@ export type TestType =
   | 'fx_motif'
   | 'fx_motive'
   | 'fx_century'
-  | 'fx_purpose';
+  | 'fx_purpose'
+  | 'fx_source'
+  | 'fx_hands'
+  | 'fx_loaded'
+  | 'fx_assumption'
+  | 'fx_tempo'
+  | 'fx_keystone'
+  | 'fx_chair'
+  | 'fx_gaming'
+  | 'fx_tic'
+  | 'fx_agentless';
 export type Dim = '2D' | '3D';
 export type Motion = 'static' | 'dynamic';
 export type Level = 1 | 2 | 3;
@@ -393,6 +403,16 @@ export const TYPE_VARIANTS: Record<TestType, [Dim, Motion][]> = {
   fx_motive: [['2D', 'static']],
   fx_century: [['2D', 'static']],
   fx_purpose: [['2D', 'static']],
+  fx_source: [['2D', 'static']],
+  fx_hands: [['2D', 'static']],
+  fx_loaded: [['2D', 'static']],
+  fx_assumption: [['2D', 'static']],
+  fx_tempo: [['2D', 'static']],
+  fx_keystone: [['2D', 'static']],
+  fx_chair: [['2D', 'static']],
+  fx_gaming: [['2D', 'static']],
+  fx_tic: [['2D', 'static']],
+  fx_agentless: [['2D', 'static']],
 };
 
 /** Drills of the intelligences block (kept out of the standard skill map). */
@@ -412,6 +432,7 @@ export const INTEL_TYPES: TestType[] = [
   'fx_channel', 'fx_defaults', 'fx_baseline', 'fx_conditions', 'fx_motion', 'fx_floors', 'fx_broken', 'fx_loop', 'fx_feed', 'fx_resolution',
   'fx_branch', 'fx_value', 'fx_carrier', 'fx_forecast', 'fx_arousal', 'fx_dose', 'fx_proportion', 'fx_modulation', 'fx_recovery', 'fx_seating',
   'fx_spacing', 'fx_under', 'fx_selfsize', 'fx_weight', 'fx_phrase', 'fx_rule', 'fx_motif', 'fx_motive', 'fx_century', 'fx_purpose',
+  'fx_source', 'fx_hands', 'fx_loaded', 'fx_assumption', 'fx_tempo', 'fx_keystone', 'fx_chair', 'fx_gaming', 'fx_tic', 'fx_agentless',
 ];
 export const ALL_TYPES: TestType[] = [...TEST_TYPES, ...INTEL_TYPES];
 export const LEVELS: Level[] = [1, 2, 3];
@@ -490,6 +511,16 @@ export const TYPE_LABEL: Record<TestType, string> = {
   fx_motive: 'הסימן שמבחין במניע',
   fx_century: 'עין של מאה שנה',
   fx_purpose: 'התכלית בפועל',
+  fx_source: 'מסנן המקור',
+  fx_hands: 'היד המקשיבה',
+  fx_loaded: 'המילה הטעונה',
+  fx_assumption: 'ההנחה שלא נבדקה',
+  fx_tempo: 'חצי פעימה של איחור',
+  fx_keystone: 'מין המפתח',
+  fx_chair: 'הכיסא השני',
+  fx_gaming: 'הדרך לעקוף',
+  fx_tic: 'התנועה שמרחיקה',
+  fx_agentless: 'המשפט בלי עושה',
 };
 
 export type Category = 'spatial' | 'perception' | 'reasoning' | 'technical';

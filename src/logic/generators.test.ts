@@ -90,6 +90,16 @@ const VARIANTS: Variant[] = [
   { type: 'fx_motive', dim: '2D', motion: 'static' },
   { type: 'fx_century', dim: '2D', motion: 'static' },
   { type: 'fx_purpose', dim: '2D', motion: 'static' },
+  { type: 'fx_source', dim: '2D', motion: 'static' },
+  { type: 'fx_hands', dim: '2D', motion: 'static' },
+  { type: 'fx_loaded', dim: '2D', motion: 'static' },
+  { type: 'fx_assumption', dim: '2D', motion: 'static' },
+  { type: 'fx_tempo', dim: '2D', motion: 'static' },
+  { type: 'fx_keystone', dim: '2D', motion: 'static' },
+  { type: 'fx_chair', dim: '2D', motion: 'static' },
+  { type: 'fx_gaming', dim: '2D', motion: 'static' },
+  { type: 'fx_tic', dim: '2D', motion: 'static' },
+  { type: 'fx_agentless', dim: '2D', motion: 'static' },
 ];
 
 describe('cube nets', () => {
