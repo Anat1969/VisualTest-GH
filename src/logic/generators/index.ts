@@ -19,6 +19,7 @@ import { effects, loop, stock } from './systems';
 import { fxBaseline, fxBroken, fxChannel, fxConditions, fxDefaults, fxFeed, fxFloors, fxLoop, fxMotion, fxResolution } from './fusion';
 import { fxArousal, fxBranch, fxCarrier, fxDose, fxForecast, fxModulation, fxProportion, fxRecovery, fxSeating, fxValue } from './fusion2';
 import { fxCentury, fxMotif, fxMotive, fxPhrase, fxPurpose, fxRule, fxSelfSize, fxSpacing, fxUnder, fxWeight } from './fusion3';
+import { fxAgentless, fxAssumption, fxChair, fxGaming, fxHands, fxKeystone, fxLoaded, fxSource, fxTempo, fxTic } from './fusion4';
 
 /** What a generator returns before shuffling and identification. Options[0] is correct. */
 export interface Draft {
@@ -201,5 +202,25 @@ function build(type: Variant['type'], dim: Variant['dim'], motion: Variant['moti
       return fxCentury(rng, level);
     case 'fx_purpose':
       return fxPurpose(rng, level);
+    case 'fx_source':
+      return fxSource(rng, level);
+    case 'fx_hands':
+      return fxHands(rng, level);
+    case 'fx_loaded':
+      return fxLoaded(rng, level);
+    case 'fx_assumption':
+      return fxAssumption(rng, level);
+    case 'fx_tempo':
+      return fxTempo(rng, level);
+    case 'fx_keystone':
+      return fxKeystone(rng, level);
+    case 'fx_chair':
+      return fxChair(rng, level);
+    case 'fx_gaming':
+      return fxGaming(rng, level);
+    case 'fx_tic':
+      return fxTic(rng, level);
+    case 'fx_agentless':
+      return fxAgentless(rng, level);
   }
 }
