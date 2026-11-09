@@ -27,7 +27,7 @@ export function fxLoaded(rng: Rng, _level: Level): Draft {
     prompt: 'אחרי המשפט הזה הצד השני הזיז את הכיסא והשפיל מבט. באיזו מילה השיחה נתקעה?',
     stimulus: { kind: 'verbal', mode: 'quote', words: [l.line] },
     options: [
-      { visual: text(l.loaded, `במקום: ${l.swap}`), correct: true, why: l.why },
+      { visual: text(l.loaded), correct: true, why: `${l.why} במקומה: "${l.swap}".` },
       ...l.others.slice(0, 3).map<Option>((w, i) => ({
         visual: text(w),
         correct: false,
